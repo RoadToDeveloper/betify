@@ -1,12 +1,12 @@
 <template>
 	<div class="container col-12 row">
-		<app-tournament v-for="(tournament, index) in futureTournaments" 
-							:key="`f${index}`"
-							:name="tournament.substring(2)"
-							:logo="futureTournamentsImg[index]"
-							v-show="tournament.substr(0, 1) == activeGameId"
+		<app-tournament v-for="(group, index) in matches" 
+							:key="`af${index}`"
+							:name="group[0]"
+							:logo="group[1]"
+							v-show="group[2] == activeGameId"
 		>
-			<future-match v-for="(match, index) in matches"
+			<future-match v-for="(match, index) in group.slice(3)"
 						:key = "match.id"
 						:coefFirst = "match.coefficients[0]"	
 						:coefSecond = "match.coefficients[1]"	
@@ -23,13 +23,14 @@
 						:teamFirst = "match.team1name"
 						:teamSecond = "match.team2name"
 						:game = "match.gameid"
-						:show = "match.show && match.tournament == tournament.substring(2)"
+						:show = "match.show"
 						:format = "`Best-of-${match.format}`"
 						:id = "match.id"
 						:tournament = "match.tournament"
 			>
 			</future-match>
 		</app-tournament>
+
 			
 	</div>	
 </template>

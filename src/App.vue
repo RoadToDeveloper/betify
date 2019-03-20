@@ -66,8 +66,6 @@
           }
           this.filterMatchesByGame({type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
        });
-      
-      // this.$router.push('future');
       console.log(this.futureMatches)
     },
     mounted() {

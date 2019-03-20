@@ -1,9 +1,7 @@
 export default {
 	namespaced: true,
 	state: {
-		matches: [],
-		tournaments: [],
-		tournamentsImg: []
+		matches: []
 	},
 	getters: {
 		matches(state) {
@@ -18,14 +16,10 @@ export default {
 	},
 	mutations: {
 		pushMatch(state, data) {
-			let i = 0;
-			state.matches.push(data);
-			//в начало названия добавляем gameid, который вырезаем в названии турнира и используем при 
-			//сортировке по играм
-			if (state.tournaments.indexOf(data.gameid+" "+data.tournament) == -1) {
-				state.tournaments.push(data.gameid+" "+data.tournament);
-				state.tournamentsImg.push(data.tournamentid);
-			} 	
+			let length = state.matches.length
+			if (length == 0) state.matches.push([data.tournament, data.tournamentid, data.gameid, data])
+			else if (data.tournament == state.matches[length-1][0]) state.matches[length-1].push(data)
+			else state.matches.push([data.tournament, data.tournamentid, data.gameid, data])
 		}
 	}
 }

@@ -17,26 +17,17 @@
 
 		<div class="matches-type row col-12">
 			<ul id="matchesTypes" class="matches-type-items col row">
-				<!-- <router-link v-for="(item, index) in types"
-							 :key="index"
-							 :to="item.url"
-							 tag="li"
-							 class="matches-type-items-item"
-							 active-class="type_item-active"
-				>
-					<a>{{ item.text }}</a>
-				</router-link> -->
-				<li class="matches-type-items-item" @click="filterMatchesByStatus('active')">Активные матчи</li>
+				<li class="matches-type-items-item type_item-active" @click="filterMatchesByStatus('active')">Активные матчи</li>
 				<li class="matches-type-items-item" @click="filterMatchesByStatus('future')">Будущие матчи</li>
 				<li class="matches-type-items-item" @click="filterMatchesByStatus('live')">LIVE матчи</li>
 				<li class="matches-type-items-item" @click="filterMatchesByStatus('past')">Прошедшие матчи</li>
 			</ul>
 		</div>
 		
-			<app-active v-show="matchesByStatus.active" key="active"></app-active>
-			<app-future v-show="matchesByStatus.future" key="future"></app-future>
-			<app-live v-show="matchesByStatus.live" key="live"></app-live>
-			<app-past v-show="matchesByStatus.past" key="past"></app-past>
+			<!-- <app-active v-show="matchesByStatus.active" key="active"></app-active> -->
+			<app-future key="future"></app-future>
+			<!-- <app-live v-show="matchesByStatus.live" key="live"></app-live>
+			<app-past v-show="matchesByStatus.past" key="past"></app-past> -->
 		
 	</div>
 </template>
@@ -166,27 +157,21 @@
 				margin: 0px
 				max-width: 100%!important	
 				.type_item-active
-					a
-						color: #fff
-
+					color: #fff
 					&:before
 						background-color: #5a83ff
 				&-item
 					list-style-type: none
-					padding: 0px
 					user-select: none
 					width: 24%
-					display: inline-flex
-					
+					display: inline-flex					
 					font-weight: 600
 					position: relative
 					transition: all 0.3s
-					a
-						padding: 5px 0px 5px 22px
-						text-decoration: none
-						color: #6f7481
-						transition: all 0.3s
-						width: 100%
+					padding: 5px 0px 5px 22px
+					text-decoration: none
+					color: #6f7481
+					transition: all 0.3s
 					&:hover
 						cursor: pointer
 					&:before
