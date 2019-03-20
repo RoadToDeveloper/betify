@@ -1,0 +1,16 @@
+html {
+	filter: blur(0px);
+	transition: filter 0.4s;
+}
+body {
+	margin: 0px;   
+	background-color: #080c17; 
+}
+body::-webkit-scrollbar-thumb {
+	background-color: #373f53;
+	border-radius: 15px;
+}
+body::-webkit-scrollbar {
+	background-color: #080c17;
+   width: 4px;
+}
