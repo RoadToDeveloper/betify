@@ -2,7 +2,8 @@ export default {
 	namespaced: true,
 	state: {
 		matches: [],
-		tournaments: []
+		tournaments: [],
+		tournamentsImg: []
 	},
 	getters: {
 		matches(state) {
@@ -10,6 +11,9 @@ export default {
 		},
 		tournaments(state) {
 			return state.tournaments
+		},
+		tournamentsImg(state) {
+			return state.tournamentsImg
 		}
 	},
 	mutations: {
@@ -18,7 +22,10 @@ export default {
 			state.matches.push(data);
 			//в начало названия добавляем gameid, который вырезаем в названии турнира и используем при 
 			//сортировке по играм
-			if (state.tournaments.indexOf(data.gameid+" "+data.tournament) == -1) state.tournaments.push(data.gameid+" "+data.tournament);	
+			if (state.tournaments.indexOf(data.gameid+" "+data.tournament) == -1) {
+				state.tournaments.push(data.gameid+" "+data.tournament);
+				state.tournamentsImg.push(data.tournamentid);
+			} 	
 		}
 	}
 }

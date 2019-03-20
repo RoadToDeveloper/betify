@@ -3,6 +3,7 @@
 		<app-tournament v-for="(tournament, index) in futureTournaments" 
 							:key="`f${index}`"
 							:name="tournament.substring(2)"
+							:logo="futureTournamentsImg[index]"
 							v-show="tournament.substr(0, 1) == activeGameId"
 		>
 			<future-match v-for="(match, index) in matches"
@@ -48,7 +49,8 @@
 		computed: {
 			...mapGetters('future', {
 				matches: 'matches',
-				futureTournaments: 'tournaments'
+				futureTournaments: 'tournaments',
+				futureTournamentsImg: 'tournamentsImg'
 			}),
 			...mapGetters('matches', {
 				activeGameId: 'activeGameId'

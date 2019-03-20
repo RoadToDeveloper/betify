@@ -1,7 +1,7 @@
 <template>
 	<div class="wrapper col-12 row">
 		<div class="tournament col-12">
-			<img src="https://static.hltv.org/images/eventLogos/4423.png" alt="">
+			<img :src="tournamentLogo" alt="">
 			{{name}}
 		</div>
 		<slot></slot>
@@ -10,7 +10,12 @@
 
 <script>
 	export default {
-		props: ['name']
+		props: ['name', 'logo'],
+		computed: {
+			tournamentLogo() {
+				return `http://betify.xyz/logo/event/${this.logo}.png`
+			}
+		}
 	}
 </script>
 

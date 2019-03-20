@@ -53,7 +53,7 @@
   export default {
     created() {
       //запрос к матчам при инициализации сайта
-      this.$http.get('http://betify.xyz/api/v1/match/get/1')
+      this.$http.get('http://betify.xyz/api/v1/match/get')
         .then(response => response.json())
         .then(data => {
            this.fillMatches(data);

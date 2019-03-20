@@ -57,7 +57,8 @@
 											moneySecond: moneySecond,
 											betName: 'Выбор события и ставка',
 											betId: null,
-											eventType: ''
+											eventType: '',
+											liveMatch: true
 										}
 									)"
 				>

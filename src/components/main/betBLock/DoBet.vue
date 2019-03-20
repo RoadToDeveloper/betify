@@ -1,26 +1,21 @@
 <template>
-	<form class="do_bet col-12 row">
+	<form class="do_bet col-12 row" @submit.prevent="sendBet">
 		<div class="col do_bet-left_decoration align-self-center"></div>		
 		<p class="do_bet-promo col-auto">{{ info.eventType }} {{ info.betName }}</p>
 		<div class="col do_bet-right_decoration align-self-center"></div>
 		<div class="do_bet-choose col-12 row">
-			<div class="do_bet-choose-first col-3" @click="chooseFirst" :class="firstActive">
-				<label class="do_bet-choose-first-radio">
-					<input type="radio" name="team_choosen" value="1" :checked="firstChoosen">
-					<img src="../../../../public/img/tick.png" alt="">					
-				</label>
-				<span>{{ info.firstChoose }}</span>
-			</div>			
-			<div class="do_bet-choose-second col-3"  @click="chooseSecond" :class="secondActive">
-				<label class="do_bet-choose-second-radio">
-					<input type="radio" name="team_choosen" value="2" :checked="secondChoosen">
+							
+			<div class="do_bet-choose-field col-6">				
+				<!-- <label class="do_bet-choose-field-radio">
+					<input type="radio" name="team_choosen" value="2" :checked="true">
 					<img src="../../../../public/img/tick.png" alt="">
-				</label>
-				<span>{{ info.secondChoose }}</span>
+				</label> -->
+				<i>Ваш выбор: </i>
+				<span>{{ info.choose }}</span>
 			</div>
 			<div class="do_bet-choose-bet col-6 row justify-content-between">
 				<input type="text" id="betInput" class="do_bet-choose-bet-input col" placeholder="Ставка" @input="onInput($event)">
-				<button class="do_bet-choose-bet-btn col" v-if="userLogin" @click.prevent="sendBet" :disabled="disableBet">Поставить</button>
+				<button class="do_bet-choose-bet-btn col" v-if="userLogin" @submit.prevent="sendBet" :disabled="disableBet">Поставить</button>
 				<div class="do_bet-choose-bet-login col-5" v-else>
 					Вход:
 					<i class="fab fa-steam"></i>
@@ -42,48 +37,23 @@
 
 	export default {
 		data: () => ({
-			firstChoosen: false,
-			secondChoosen: false,
-			teamChoosen: null,
 			userLogin: true,
 			betSum: null,
-			potentialWin: 0,
 			exp: 0
 		}),
 		computed: {
 			...mapGetters('betBlock', {
 				info: 'info'
 			}),
-			firstActive() {
-				if (this.firstChoosen == true) {
-					this.potentialWin = parseInt(this.betSum * this.info.coefFirst);
-					this.teamChoosen = 1;
-					return "activeChoose"
-				}
-					else return ''
-			},
 			disableBet() {
-				if (this.betSum == null || this.teamChoosen == null) return true
+				if (this.betSum == null || this.choose == "") return true
 					else return false
 			},
-			secondActive() {
-				if (this.secondChoosen == true) {
-					this.potentialWin = parseInt(this.betSum * this.info.coefSecond);
-					this.teamChoosen = 2;
-					return "activeChoose"
-				}
-					else return ''
+			potentialWin() {
+				return Math.floor(this.betSum * this.info.coef)
 			}
 		},
 		methods: {
-			chooseFirst() {
-				this.firstChoosen = true;
-				this.secondChoosen = false;
-			},
-			chooseSecond() {
-				this.secondChoosen = true;
-				this.firstChoosen = false;
-			},
 			onInput(e) {
 				this.betSum = e.target.value;
 				if (/[^0-9]/.test(this.betSum)) this.betSum = null
@@ -92,7 +62,7 @@
 			sendBet() {
 				console.log({
 					id: this.info.betId,
-					choose: this.teamChoosen,
+					choose: this.info.choose,
 					bet: this.betSum
 				})
 			}
@@ -104,7 +74,6 @@
 	.do_bet
 		padding: 20px 30px 
 		margin-left: 0px
-		height: 170px
 		background-color: #12192a
 		align-items: flex-start
 		align-content: flex-start
@@ -134,11 +103,9 @@
 			margin-top: 30px
 			margin-left: 0px
 			padding: 0px
-			.activeChoose
-				span
-					color: #fe903b!important
-			&-first, &-second
+			&-field
 				padding: 0px
+				padding-right: 10px
 				display: flex
 				align-items: center
 				user-select: none
@@ -146,7 +113,7 @@
 				label
 					border: 2px solid #fe903b
 					border-radius: 50%
-					margin-right: 10px
+					margin-right: 3px
 					width: 18px
 					height: 18px
 					padding: 3px
@@ -159,13 +126,16 @@
 						position: absolute
 					&>input:checked + img
 						display: block
-					&:hover
-						cursor: pointer
 				span
 					color: #fff
 					font-weight: 600
 					font-size: 14px
 					transition: all 0.2s
+				i
+					font-style: normal
+					font-weight: 600
+					color: #fe903b
+					margin-right: 5px
 			&-bet
 				padding: 0px
 				margin-left: 0px

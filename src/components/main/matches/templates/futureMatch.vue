@@ -10,7 +10,36 @@
 		<div class="item-first_team col">
 			<span>{{ teamFirst }}</span>
 			<img :src="logoFirst" alt="">	
-			<div class="item-money-wrap">
+			<div class="item-money-wrap" @mousedown="getInfoFromApi(
+										{
+											id: id,
+											coefFirst: coefFirst,
+											coefSecond: coefSecond,
+											date: date,
+											time: time,
+											logoFirst: logoFirst,
+											logoSecond: logoSecond,
+											percentageFirst: percentageFirst,
+											percentageSecond: percentageSecond,
+											scoreFirst: scoreFirst,
+											scoreSecond: scoreSecond,
+											teamFirst: teamFirst,
+											teamSecond: teamSecond,
+											game: game,
+											format: format,
+											tournament: tournament,
+											firstChoose: teamFirst,
+											secondChoose: teamSecond,
+											moneyFirst: moneyFirst,
+											moneySecond: moneySecond,
+											betName: 'Победа в матче',
+											eventType: 'Общие события',
+											readyBet: 1,
+											betId: id,
+											choose: teamFirst,
+											coef: coefFirst
+										}
+									)">
 				<i>{{ moneyFirst }} ₽</i>
 				<span>{{ coefFirst }} - {{ percentageFirst }}</span>
 			</div>			
@@ -19,7 +48,36 @@
 			- : -
 		</div>
 		<div class="item-second_team col">
-			<div class="item-money-wrap">
+			<div class="item-money-wrap" @mousedown="getInfoFromApi(
+										{
+											id: id,
+											coefFirst: coefFirst,
+											coefSecond: coefSecond,
+											date: date,
+											time: time,
+											logoFirst: logoFirst,
+											logoSecond: logoSecond,
+											percentageFirst: percentageFirst,
+											percentageSecond: percentageSecond,
+											scoreFirst: scoreFirst,
+											scoreSecond: scoreSecond,
+											teamFirst: teamFirst,
+											teamSecond: teamSecond,
+											game: game,
+											format: format,
+											tournament: tournament,
+											firstChoose: teamFirst,
+											secondChoose: teamSecond,
+											moneyFirst: moneyFirst,
+											moneySecond: moneySecond,
+											betName: 'Победа в матче',
+											eventType: 'Общие события',
+											readyBet: 2,
+											betId: id,
+											choose: teamSecond,
+											coef: coefSecond
+										}
+									)">
 				<i>{{ moneySecond }} ₽</i>
 				<span>{{ coefSecond }} - {{ percentageSecond }}</span>
 			</div>
@@ -56,7 +114,8 @@
 									)"
 				>
 			Подробнее
-			<img src="../../../../../public/img/arrow-right.png" alt="">
+			<!-- <img src="../../../../../public/img/arrow-right.png" alt=""> -->
+			<i class="fas fa-arrow-right"></i>
 		</div>
 	</div>
 </template>
@@ -141,6 +200,7 @@
 		&:hover
 			.item-money-wrap				
 				border-color: rgba(255, 255, 255, 0.7)
+
 				i
 					transform: translate3d(0px, 100%, 0px)
 				span
@@ -178,6 +238,7 @@
 		&-money
 			display: flex
 			align-items: center
+
 			&-wrap
 				display: inline-flex
 				position: relative
@@ -191,6 +252,11 @@
 				padding: 0px
 				border-radius: 10px
 				overflow: hidden
+				&:hover
+					cursor: pointer
+					border-color: transparent!important
+					background-color: #5a83ff
+					// #fe903b
 				i, span
 					font-style: normal
 					display: inline-flex
@@ -211,13 +277,16 @@
 			align-items: center
 			color: #6f7481
 			font-size: 14px
-			transition: transform 0.3s
+			transition: all 0.3s
 			img
 				margin-left: 10px
 				width: 15px
 				transform: rotate(180deg)
+			i
+				margin-left: 4px
 			&:hover
-				transform: translate3d(5px, 0px, 0px)
+				
+				color: #5a83ff
 				cursor: pointer
 
 	@media only screen and (max-width : 1600px)

@@ -3,6 +3,7 @@
 		<app-tournament v-for="(tournament, index) in liveTournaments" 
 							:key="`l${index}`"
 							:name="tournament.substring(2)"
+							:logo="liveTournamentsImg[index]"
 							v-show="tournament.substr(0, 1) == activeGameId"
 		>
 			<live-match v-for="(match, index) in matches"
@@ -44,7 +45,8 @@
 		computed: {
 			...mapGetters('live', {
 				matches: 'matches',
-				liveTournaments: 'tournaments'
+				liveTournaments: 'tournaments',
+				liveTournamentsImg: 'tournamentsImg'
 			}),
 			...mapGetters('matches', {
 				activeGameId: 'activeGameId'

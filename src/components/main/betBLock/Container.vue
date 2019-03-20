@@ -35,7 +35,7 @@
 				</div>
 			</div>
 			<div class="block_wrap-body-extra_events col-12 row">
-				<p class="col-12">Дополнительные события:</p>
+				<!-- <p class="col-12">Дополнительные события:</p> -->
 				<div class="block_wrap-body-extra_events-items col-12 row" 
 						v-for="(eventList, index) in betItems"
 						v-show="eventList.length"

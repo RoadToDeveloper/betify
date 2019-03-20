@@ -3,6 +3,7 @@
 		<app-tournament v-for="(tournament, index) in liveTournaments" 
 							:key="`al${index}`"
 							:name="tournament.substring(2)"
+							:logo="liveTournamentsImg[index]"
 							v-show="tournament.substr(0, 1) == activeGameId"
 		>
 			<live-match v-for="(match, index) in liveMatches"
@@ -34,6 +35,7 @@
 		<app-tournament v-for="(tournament, index) in futureTournaments" 
 							:key="`af${index}`"
 							:name="tournament.substring(2)"
+							:logo="futureTournamentsImg[index]"
 							v-show="tournament.substr(0, 1) == activeGameId" 
 		>
 			<future-match v-for="(match, index) in futureMatches"
@@ -85,11 +87,13 @@
 		computed: {
 			...mapGetters('future', {
 				futureMatches: 'matches',
-				futureTournaments: 'tournaments'
+				futureTournaments: 'tournaments',
+				futureTournamentsImg: 'tournamentsImg'
 			}),
 			...mapGetters('live', {
 				liveMatches: 'matches',
-				liveTournaments: 'tournaments'
+				liveTournaments: 'tournaments',
+				liveTournamentsImg: 'tournamentsImg'
 			}),
 			...mapGetters('matches', {
 				activeGameId: 'activeGameId'

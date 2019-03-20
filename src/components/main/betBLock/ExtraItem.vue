@@ -1,10 +1,8 @@
 <template>
 	<div class="item col-12 row">
 		<div class="item-first col-6"  @click="userChooseBet($event, {
-															firstResult: teamFirst, 
-															coefFirst: coefFirst,
-															secondResult: teamSecond, 
-															coefSecond: coefSecond,
+															choose: teamFirst, 
+															coef: coefFirst,
 															betName: name,
 															eventType: eventType,
 															betId: betId
@@ -19,10 +17,8 @@
 			
 		</div>
 		<div class="item-second col-6"  @click="userChooseBet($event, {
-															firstResult: teamFirst, 
-															coefFirst: coefFirst,
-															secondResult: teamSecond, 
-															coefSecond: coefSecond,
+															choose: teamSecond, 
+															coef: coefSecond,
 															betName: name,
 															eventType: eventType,
 															betId: betId
