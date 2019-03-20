@@ -91,7 +91,13 @@ export default {
 		],
 		headerLogo: '',
 		activeGame: 'CS:GO',
-		activeGameId: 1
+		activeGameId: 1,
+		matchesByStatus: {
+			active: true,
+			future: false,
+			live: false,
+			past: false
+		}
 	},
 	getters: {
 		matches(state) {
@@ -105,9 +111,19 @@ export default {
 		},
 		activeGameId(state) {
 			return state.activeGameId;
+		},
+		matchesByStatus(state) {
+			return state.matchesByStatus
 		}
 	},
 	mutations: {
+		filterMatchesByStatus(state, type) {
+			state.matchesByStatus.active = false;
+			state.matchesByStatus.future = false;
+			state.matchesByStatus.live = false;
+			state.matchesByStatus.past = false;
+			state.matchesByStatus[type] = true;
+		},
 		filterMatchesByGame(state, data) {
 			for (let i = 0; i < state.matches.length; i++) {
 				if (state.matches[i].gameid == data.type) state.matches[i].show = true;

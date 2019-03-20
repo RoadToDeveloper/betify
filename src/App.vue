@@ -64,8 +64,9 @@
             else if (this.matches[i].status == 1) this.pushLive(this.matches[i]);
             else if (this.matches[i].status == 0) this.pushFuture(this.matches[i]);
           }
+          this.filterMatchesByGame({type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
        });
-      this.filterMatchesByGame({type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
+      
       // this.$router.push('future');
       console.log(this.futureMatches)
     },

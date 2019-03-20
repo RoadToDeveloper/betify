@@ -17,7 +17,7 @@
 
 		<div class="matches-type row col-12">
 			<ul id="matchesTypes" class="matches-type-items col row">
-				<router-link v-for="(item, index) in types"
+				<!-- <router-link v-for="(item, index) in types"
 							 :key="index"
 							 :to="item.url"
 							 tag="li"
@@ -25,13 +25,19 @@
 							 active-class="type_item-active"
 				>
 					<a>{{ item.text }}</a>
-				</router-link>
-
+				</router-link> -->
+				<li class="matches-type-items-item" @click="filterMatchesByStatus('active')">Активные матчи</li>
+				<li class="matches-type-items-item" @click="filterMatchesByStatus('future')">Будущие матчи</li>
+				<li class="matches-type-items-item" @click="filterMatchesByStatus('live')">LIVE матчи</li>
+				<li class="matches-type-items-item" @click="filterMatchesByStatus('past')">Прошедшие матчи</li>
 			</ul>
 		</div>
-		<transition name="changeMatches">
-			<router-view></router-view>
-		</transition>
+		
+			<app-active v-show="matchesByStatus.active" key="active"></app-active>
+			<app-future v-show="matchesByStatus.future" key="future"></app-future>
+			<app-live v-show="matchesByStatus.live" key="live"></app-live>
+			<app-past v-show="matchesByStatus.past" key="past"></app-past>
+		
 	</div>
 </template>
 
@@ -76,7 +82,13 @@
 		computed: {
 			...mapGetters('matches', {
 				headerLogo: 'headerLogo',
-				gameName: 'activeGame'
+				gameName: 'activeGame',
+				matchesByStatus: 'matchesByStatus'
+			})
+		},
+		methods: {
+			...mapMutations('matches', {
+				filterMatchesByStatus: 'filterMatchesByStatus'
 			})
 		},
 		components: {
@@ -91,6 +103,11 @@
 
 <style scoped lang="sass">
 	// VUE анимации
+	.changeMatches-enter
+		transform: translate3d(10%, 0px, 0px)
+		opacity: 0.5
+	.changeMatches-enter-active
+		transition: all 0.4s
 	.changeMatches-leave
 		display: none
 	.changeMatches-leave-active
