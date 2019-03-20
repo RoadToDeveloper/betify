@@ -151,14 +151,14 @@
 				.type_item-active
 					a
 						color: #fff
+
 					&:before
 						background-color: #5a83ff
 				&-item
 					list-style-type: none
 					padding: 0px
 					user-select: none
-					width: 20%
-					margin-right: 4%
+					width: 24%
 					display: inline-flex
 					
 					font-weight: 600
@@ -169,6 +169,7 @@
 						text-decoration: none
 						color: #6f7481
 						transition: all 0.3s
+						width: 100%
 					&:hover
 						cursor: pointer
 					&:before

@@ -23,12 +23,12 @@
 
 		<div class="chat-send_wrap row col-12 align-items-center">
 			<div class="chat-send_wrap-msg col-9" aria-multiline="true" @keydown.enter.prevent="sendMsg(message, userData, true)">
-				<div 	class="textarea" id="msg" role="textbox" aria-multiline="true" contenteditable="true"
+				<div 	class="textarea" id="msg" role="textbox" aria-multiline="true" rows="5" contenteditable="true"
 						@focus="changeColorFocus" 
 						@blur="changeColorBlur"   
 						@keypress="onInput($event)" 
 						@keyup="test($event)"
-				>						
+				>					
 				</div>
 				<div class="textarea-placeholder" :class="placeholderColor" v-if="removePlaceholder">
 					<div class="textarea-placeholder-content" >Напишите сообщение…</div>
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+	
 	function scrollChat() {
 		let block = document.getElementById("chat-body");
   		block.scrollTop = block.scrollHeight;
@@ -65,7 +66,7 @@
 	
 	export default {
 		mounted() {
-			scrollChat()
+			scrollChat();
 		},
 		data: () => ({
 			items: [
@@ -306,6 +307,7 @@
 		methods: {
 			onInput(e) {
 				if(!e.ctrlKey) this.message += e.key;	
+				scrollChat();
 			},
 			test(e) {
 				this.message = document.getElementById("msg").innerText;
@@ -379,7 +381,7 @@
 		padding: 0px 20px 15px 43px	
 		&-body
 			margin-left: 0px
-			padding: 0px
+			padding: 0px 0px 10px 0px
 			flex: 1
 			overflow-y: scroll
 			&::-webkit-scrollbar-thumb
@@ -424,14 +426,14 @@
 				&-name
 					color: rgba(255, 255, 255, 0.4)
 		&-send_wrap	
-			margin-top: 10px
+			margin-top: 0px
 			margin-left: 0px	
 			color: #fff		
 			background-color: #293c74
-			border-radius: 30px
+			border-radius: 25px
 			font-size: 12px
-			padding: 0px 15px
-			max-height: 40px
+			padding: 5px 15px
+			max-height: fit-content
 			&-msg
 				padding: 0px
 				outline: none
@@ -439,9 +441,17 @@
 					outline: none
 					-webkit-user-select: none
 					user-select: none
-					max-height: 200px
+					max-height: 100px
+					overflow-y: auto
+					padding: 0px
+					overflow-x: hidden
 					word-wrap: break-word
 					resize: none
+					&::-webkit-scrollbar-thumb
+						background-color: lightgray
+					&::-webkit-scrollbar
+						background-color: transparent
+						width: 0px
 					img
 						width: 18px
 					&-placeholder
@@ -463,17 +473,17 @@
 				align-self: flex-end
 				display: flex
 				align-items: center
+				justify-content: flex-end
 				margin-bottom: 2px
 				img, svg
-					margin-left: 5px
-					padding: 6px
-					width: 34px
+					margin-left: 7px
+					height: 24px
 					&:hover
 						cursor: pointer
 						filter: brightness(0.8)
 				svg
-					height: 36px
-					min-width: 36px
+					height: 26px
+					width: 26px
 			&-smiles
 				position: absolute
 				padding: 10px 9px 10px 15px
@@ -511,7 +521,6 @@
 					&-text
 						margin: 0px
 			&-send_wrap
-				max-height: 31px
 				padding: 0px 5px 0px 10px
 				margin-top: 5px
 				&-msg
