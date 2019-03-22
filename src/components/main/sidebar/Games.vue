@@ -3,7 +3,7 @@
 		<div class="games-item col-12" 
 			:class="game.class" 
 			v-for="(game, index) in games"	
-			@click="gameActive(index, {type: game.gameid, logo: game.img, url: game.url, name: game.name})"		
+			@mousedown="gameActive(index, {type: game.gameid, logo: game.img, url: game.url, name: game.name})"		
 		>
 			<img class="games-item-img" :src="game.img" alt="">
 			<span class="games-item-name">{{ game.name }}</span>
@@ -18,9 +18,6 @@
 
 	export default {
 		mounted() {
-			// setTimeout(()=>{
-			// 	this.games[0].class = 'active'
-			// }, 200);	
 			for (let i = 0; i < this.games.length; i++) {
 				if (this.games[i].name == this.currentGame) this.games[i].class = 'active'
 			}			
@@ -76,8 +73,8 @@
 			gameActive(i, data) {
 				for (let game of this.games) game.class="";
 				this.games[i].class="active";
-				this.filterMatches(data);
-				// this.$router.push({name: 'matches', params: {game: data.url}});
+				// this.filterMatches(data);
+				this.$router.push(`/${data.url}`);
 			}
 		}
 	}

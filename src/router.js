@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // import Home from './views/Home.vue'
+import matches from './store/modules/Matches.js'
 
 Vue.use(Router)
 
@@ -8,34 +9,44 @@ export default new Router({
   routes: [
     // {
     //   path: '/',
-    //   name: 'home',
+    //   name: 'home'
     //   component: Home
     // },
     {
-        // path: ':game',
         path: '*',
         component: () => import('./components/main/matches/Matches.vue'),
+        beforeEnter: (to, from, next) => {
+          matches.mutations.filterMatchesByGame(matches.state, {type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
+          next();
+        },
         name: 'matches',
         children: [
           {
-            path: 'active',
+            path: 'csgo',
             name: 'active',
-            component: () => import('./components/main/matches/Active.vue')
+            beforeEnter: (to, from, next) => {
+              matches.mutations.filterMatchesByGame(matches.state, {type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
+              next();
+            },
+            component: () => import('./components/main/matches/Matches.vue')
           },
           {
-            path: 'future',
+            path: 'dota2',
             name: 'future',
-            component: () => import('./components/main/matches/Future.vue')
+            beforeEnter: (to, from, next) => {
+              matches.mutations.filterMatchesByGame(matches.state, {type: 2, logo: '/img/dota2.png', name: 'Dota 2'});
+              next();
+            },
+            component: () => import('./components/main/matches/Matches.vue')
           },
           {
-            path: 'live',
+            path: 'lol',
             name: 'live',
-            component: () => import('./components/main/matches/Live.vue')
-          },
-          {
-            path: 'past',
-            name: 'past',
-            component: () => import('./components/main/matches/Past.vue')
+            beforeEnter: (to, from, next) => {
+              matches.mutations.filterMatchesByGame(matches.state, {type: 3, logo: '/img/lol.png', name: 'League of Legends'});
+              next();
+            },
+            component: () => import('./components/main/matches/Matches.vue')
           }
         ]
     },

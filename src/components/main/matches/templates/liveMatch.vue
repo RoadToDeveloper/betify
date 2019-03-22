@@ -63,7 +63,7 @@
 									)"
 				>
 			Подробнее
-			<img src="../../../../../public/img/arrow-right.png" alt="">
+			<i class="fas fa-arrow-right"></i>
 		</div>
 	</div>
 </template>
@@ -205,14 +205,18 @@
 			display: flex
 			align-items: center
 			color: rgba(255, 255, 255, 0.6)
-			margin: 0px 13px
+			margin: 0px
 			font-weight: 600
+			width: 100px
 			span
 				display: inline-block
 				background-color: rgba(90, 131, 255, 0.6)
-				padding: 5px 18px
+				padding: 5px 0px
 				font-size: 14px
 				border-radius: 7px
+				width: 100%
+				margin: 0px 15px
+				text-align: center
 				i
 					font-style: normal
 				.winner
@@ -252,13 +256,15 @@
 			align-items: center
 			color: #6f7481
 			font-size: 14px
-			transition: transform 0.3s
+			transition: all 0.3s
 			img
 				margin-left: 10px
 				width: 15px
 				transform: rotate(180deg)
-			&:hover
-				transform: translate3d(5px, 0px, 0px)
+			i
+				margin-left: 4px
+			&:hover			
+				color: #5a83ff
 				cursor: pointer
 	@media only screen and (max-width : 1600px)
 		.item
@@ -285,5 +291,18 @@
 					min-width: 60px
 					text-align: center
 			&-extra
-				font-size: 12px
+				display: flex
+				align-items: center
+				color: #6f7481
+				font-size: 14px
+				transition: all 0.3s
+				img
+					margin-left: 10px
+					width: 15px
+					transform: rotate(180deg)
+				i
+					margin-left: 4px
+				&:hover			
+					color: #5a83ff
+					cursor: pointer
 </style>

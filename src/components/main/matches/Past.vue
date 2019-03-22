@@ -1,12 +1,12 @@
 <template>
 	<div class="container col-12 row">
-		<app-tournament v-for="(tournament, index) in pastTournaments" 
+		<app-tournament v-for="(group, index) in matches" 
 							:key="`p${index}`"
-							:name="tournament.substring(2)"
-							:logo="pastTournamentsImg[index]"
-							v-show="tournament.substr(0, 1) == activeGameId"
+							:name="group[0]"
+							:logo="group[1]"
+							v-show="group[2] == activeGameId"
 		>
-			<past-match v-for="(match, index) in matches"
+			<past-match v-for="(match, index) in group.slice(3)"
 						:key = "match.id"
 						:coefFirst = "match.coefficients[0]"	
 						:coefSecond = "match.coefficients[1]"	
@@ -16,14 +16,14 @@
 						:logoSecond = "`http://betify.xyz/logo/${match.team2id}.${match.team2extension}`"
 						:moneyFirst = "match.money1"
 						:moneySecond = "match.money2"
-						:percentageFirst = "(match.money1 + 1) / (match.money1 + match.money2 + 2) * 100 + '%'"
-						:percentageSecond = "(match.money2 + 1) / (match.money1 + match.money2 + 2) * 100 + '%'"
+						:percentageFirst = "((match.money1 + 1) / (match.money1 + match.money2 + 2) * 100).toFixed(0) + '%'"
+						:percentageSecond = "((match.money2 + 1) / (match.money1 + match.money2 + 2) * 100).toFixed(0) + '%'"
 						:scoreFirst = "match.score.split(':')[0]"
 						:scoreSecond = "match.score.split(':')[1]"
 						:teamFirst = "match.team1name"
 						:teamSecond = "match.team2name"
 						:game = "match.gameid"
-						:show = "match.show && match.tournament == tournament.substring(2)"
+						:show = "match.show"
 						:format = "`Best-of-${match.format}`"
 						:id = "match.id"
 						:tournament = "match.tournament"
@@ -44,9 +44,7 @@
 	export default {
 		computed: {
 			...mapGetters('past', {
-				matches: 'matches',
-				pastTournaments: 'tournaments',
-				pastTournamentsImg: 'tournamentsImg'
+				matches: 'matches'
 			}),
 			...mapGetters('matches', {
 				activeGameId: 'activeGameId'

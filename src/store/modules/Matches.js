@@ -1,15 +1,13 @@
 export default {
 	namespaced: true,
 	state: {
-		matches: [
-
-		],
+		matches: [],
 		headerLogo: '',
-		activeGame: 'CS:GO',
-		activeGameId: 1,
+		activeGame: '',
+		activeGameId: null,
 		matchesByStatus: {
-			active: false,
-			future: true,
+			active: true,
+			future: false,
 			live: false,
 			past: false
 		}
@@ -47,6 +45,7 @@ export default {
 			state.headerLogo = data.logo;
 			state.activeGame = data.name;
 			state.activeGameId = data.type;
+			console.log("я тут")
 		},
 		getMatches(state, matchData) {
 			state.matches = matchData;

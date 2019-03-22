@@ -232,8 +232,10 @@
 			display: flex
 			align-items: center
 			color: rgba(255, 255, 255, 0.6)
-			margin: 0px 30px
+			margin: 0px
 			font-weight: 600
+			justify-content: center
+			width: 100px
 		&-second_team
 		&-money
 			display: flex
@@ -284,8 +286,7 @@
 				transform: rotate(180deg)
 			i
 				margin-left: 4px
-			&:hover
-				
+			&:hover			
 				color: #5a83ff
 				cursor: pointer
 

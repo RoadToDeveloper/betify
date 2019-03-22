@@ -17,17 +17,17 @@
 
 		<div class="matches-type row col-12">
 			<ul id="matchesTypes" class="matches-type-items col row">
-				<li class="matches-type-items-item type_item-active" @click="filterMatchesByStatus('active')">Активные матчи</li>
-				<li class="matches-type-items-item" @click="filterMatchesByStatus('future')">Будущие матчи</li>
-				<li class="matches-type-items-item" @click="filterMatchesByStatus('live')">LIVE матчи</li>
-				<li class="matches-type-items-item" @click="filterMatchesByStatus('past')">Прошедшие матчи</li>
+				<li class="matches-type-items-item type_item-active" @click="sortByStatus($event, 'active')">Активные матчи</li>
+				<li class="matches-type-items-item" @mousedown="sortByStatus($event, 'future')">Будущие матчи</li>
+				<li class="matches-type-items-item" @mousedown="sortByStatus($event, 'live')">LIVE матчи</li>
+				<li class="matches-type-items-item" @mousedown="sortByStatus($event, 'past')">Прошедшие матчи</li>
 			</ul>
 		</div>
 		
-			<!-- <app-active v-show="matchesByStatus.active" key="active"></app-active> -->
-			<app-future key="future"></app-future>
-			<!-- <app-live v-show="matchesByStatus.live" key="live"></app-live>
-			<app-past v-show="matchesByStatus.past" key="past"></app-past> -->
+			<app-active v-show="matchesByStatus.active" key="active"></app-active>
+			<app-future v-show="matchesByStatus.future" key="future"></app-future>
+			<app-live v-show="matchesByStatus.live" key="live"></app-live>
+			<app-past v-show="matchesByStatus.past" key="past"></app-past>
 		
 	</div>
 </template>
@@ -80,7 +80,15 @@
 		methods: {
 			...mapMutations('matches', {
 				filterMatchesByStatus: 'filterMatchesByStatus'
-			})
+			}),
+			sortByStatus(e, type) {
+				var items = document.querySelectorAll(".matches-type-items-item");
+				for (let item of items) {
+					item.classList.remove("type_item-active")
+				}
+				e.target.classList.add("type_item-active");
+				this.filterMatchesByStatus(type);
+			}
 		},
 		components: {
 			AppActive,

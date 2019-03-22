@@ -61,12 +61,21 @@
           for (let i = 0; i < this.matches.length; i++) {
             this.$set(this.matches[i], 'show', true)
             if (this.matches[i].status == 2) this.pushPast(this.matches[i]);
-            else if (this.matches[i].status == 1) this.pushLive(this.matches[i]);
-            else if (this.matches[i].status == 0) this.pushFuture(this.matches[i]);
+            else if (this.matches[i].status == 1) {
+              this.pushActive(this.matches[i]);
+              this.pushLive(this.matches[i]);
+            } 
+            else if (this.matches[i].status == 0) {
+              this.pushActive(this.matches[i]);
+              this.pushFuture(this.matches[i]);
+            } 
           }
-          this.filterMatchesByGame({type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
+          console.log(this.activeMatches);
+          console.log(this.liveMatches);
+          console.log(this.futureMatches);
+          // this.filterMatchesByGame({type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
        });
-      console.log(this.futureMatches)
+
     },
     mounted() {
       //позиционка
@@ -80,6 +89,9 @@
       }),
       ...mapGetters('matches', {
         matches: 'matches'
+      }),
+      ...mapGetters('active', {
+        activeMatches: 'matches'
       }),
       ...mapGetters('past', {
         pastMatches: 'matches'
@@ -97,6 +109,9 @@
     methods: {
       ...mapMutations('betBlock', {
         hideBlock: 'hideBlock'
+      }),
+      ...mapMutations('active', {
+        pushActive: 'pushMatch'
       }),
       ...mapMutations('past', {
         pushPast: 'pushMatch'
@@ -163,8 +178,11 @@
   position: relative
   overflow-x: hidden
   margin-left: 0px
-  min-height: 895px
+  min-height: calc(100vh - 84px)
   padding: 0px
   background-color: #0b101c
+@media only screen and (max-width : 1600px)
+  #main
+    min-height: calc(100vh - 59px)
   
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<div class="container col-12 row">
 		<app-tournament v-for="(group, index) in matches" 
-							:key="`af${index}`"
+							:key="`f${index}`"
 							:name="group[0]"
 							:logo="group[1]"
 							v-show="group[2] == activeGameId"
@@ -16,8 +16,8 @@
 						:logoSecond = "`http://betify.xyz/logo/${match.team2id}.${match.team2extension}`"
 						:moneyFirst = "match.money1"
 						:moneySecond = "match.money2"
-						:percentageFirst = "(match.money1 + 1) / (match.money1 + match.money2 + 2) * 100 + '%'"
-						:percentageSecond = "(match.money2 + 1) / (match.money1 + match.money2 + 2) * 100 + '%'"
+						:percentageFirst = "((match.money1 + 1) / (match.money1 + match.money2 + 2) * 100).toFixed(0) + '%'"
+						:percentageSecond = "((match.money2 + 1) / (match.money1 + match.money2 + 2) * 100).toFixed(0) + '%'"
 						:scoreFirst = "match.score.split(':')[0]"
 						:scoreSecond = "match.score.split(':')[1]"
 						:teamFirst = "match.team1name"
