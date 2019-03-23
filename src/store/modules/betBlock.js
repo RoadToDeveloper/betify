@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import router from '../../router.js'
+import matches from './Matches.js'
 
 export default {
 	namespaced: true,
@@ -32,7 +34,7 @@ export default {
 		//всю полученную информацию с сервера о матче переносим в выдвигающийся блок
 		pushInfoToBetBLock(state, data) {
 			state.info = data;
-			state.show = true;
+			// state.show = true;
 			// не обнуляем choose и coef, если ставка делается сразу из матча
 			if (data.readyBet == undefined) {
 				state.info.coef = 0;
@@ -45,9 +47,9 @@ export default {
 				body.onkeydown = function(e) {					
 					if (e.code == "Escape")	{
 						state.show = false;
-						body.onkeydown = function(e) {return 0}
-						body.onclick = function(e) {return 0}
-						console.log("123123")
+						body.onkeydown = function(e) {return 0};
+						body.onclick = function(e) {return 0};
+						if (router.currentRoute.name == "betBlock") router.go(-1);
 					}
 					else return 0
 				}
@@ -55,8 +57,9 @@ export default {
 					let betBlockWidth = parseInt(getComputedStyle(document.getElementById("block_wrap")).width);
 					if (e.pageX < window.innerWidth - betBlockWidth) {
 						state.show = false;
-						body.onkeydown = function(e) {return 0}
-						body.onclick = function(e) {return 0}
+						body.onkeydown = function(e) {return 0};
+						body.onclick = function(e) {return 0};
+						if (router.currentRoute.name == "betBlock") router.go(-1);
 					}
 				}
 			}, 500)
@@ -75,11 +78,13 @@ export default {
 	actions: {
 		//обращение к апи при нажатии на кнопку "подробнее"
 		getInfoFromApi(store, betData) {
+			
 			if (store.state.show == false) {
 				Vue.http.get(`http://betify.xyz/api/v1/match/getEvents/${betData.id}`)
 				.then(response => response.json())
 				.then(data => {	 
-					console.log(betData)       	
+					console.log(betData)  
+					
 					store.state.betItems = [[],[],[],[],[],[]]
 		     		//добавление события "победа в матче", если матч не в лайве
 		     		if (betData.liveMatch != true) {
@@ -92,11 +97,10 @@ export default {
 		     				parent: betData.id,
 		     				result: "",
 		     				status: 0,
-		     				team1name: betData.teamFirst,
-		     				team2name: betData.teamSecond
+		     				team1name: betData.firstChoose,
+		     				team2name: betData.secondChoose
 		     			})
-		     		}   
-
+		     		};   		     		
 		     		for (let i = 0; i < data.length; i++) {
 		     			let mapCounter;
 		     			if (data[i].type < 100) {
@@ -107,9 +111,14 @@ export default {
 		     				store.state.betItems[mapCounter].push(data[i]);
 		     			}
 		     		} 
-
+					
 		     	});
-				store.commit('pushInfoToBetBLock', betData)
+		     	router.push(`/${betData.id}`);
+		     	//таймауты стоят чтобы не лагало появление блока при рендеринге
+		     	setTimeout(() => {
+					store.commit('pushInfoToBetBLock', betData);
+					store.state.show = true; 
+				}, 50)
 				if (betData.readyBet == 1 || betData.readyBet == 2) {
 					store.commit('pushBetInfo', betData);
 					setTimeout(() => {
@@ -121,7 +130,7 @@ export default {
 		     			if (betData.readyBet == 1) document.querySelector(".block_wrap-body-extra_events-items:first-of-type .item div:first-of-type").classList.add("activeItem")
 		     				else document.querySelector(".block_wrap-body-extra_events-items:first-of-type .item div:last-of-type").classList.add("activeItem")
 		     					document.getElementById("betInput").focus(); 
-		     		}, 100)	     		    			
+		     		}, 50)	     		    			
 				} 
 			}			
 		}

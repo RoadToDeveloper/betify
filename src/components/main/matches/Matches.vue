@@ -74,7 +74,8 @@
 			...mapGetters('matches', {
 				headerLogo: 'headerLogo',
 				gameName: 'activeGame',
-				matchesByStatus: 'matchesByStatus'
+				matchesByStatus: 'matchesByStatus',
+				allMatches: 'matches'
 			})
 		},
 		methods: {

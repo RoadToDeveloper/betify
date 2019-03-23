@@ -9,7 +9,7 @@
 														})">
 			<p class="team_and_coef_wrap">
 				<span>{{ teamFirst }}</span>
-				<i>{{ coefFirst }}</i>
+				<i>x{{ coefFirst }}</i>
 			</p>
 			<p class="money_wrap">
 				{{ moneyFirst }} ₽
@@ -24,7 +24,7 @@
 															betId: betId
 														})">
 			<p class="team_and_coef_wrap">
-				<i>{{ coefSecond }}</i>
+				<i>x{{ coefSecond }}</i>
 				<span>{{ teamSecond }}</span>
 				
 			</p>

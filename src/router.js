@@ -1,11 +1,12 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import router from 'vue-router'
 // import Home from './views/Home.vue'
 import matches from './store/modules/Matches.js'
+import betBlock from './store/modules/betBlock.js'
 
-Vue.use(Router)
+Vue.use(router)
 
-export default new Router({
+export default new router({
   routes: [
     // {
     //   path: '/',
@@ -13,7 +14,7 @@ export default new Router({
     //   component: Home
     // },
     {
-        path: '*',
+        path: '',
         component: () => import('./components/main/matches/Matches.vue'),
         beforeEnter: (to, from, next) => {
           matches.mutations.filterMatchesByGame(matches.state, {type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
@@ -23,29 +24,44 @@ export default new Router({
         children: [
           {
             path: 'csgo',
-            name: 'active',
             beforeEnter: (to, from, next) => {
-              matches.mutations.filterMatchesByGame(matches.state, {type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
+              matches.mutations.filterMatchesByGame(matches.state, {type: 1, logo: '/img/csgo.png', name: 'CS:GO', url: 'csgo'});
+              betBlock.mutations.hideBlock(betBlock.state);
               next();
             },
             component: () => import('./components/main/matches/Matches.vue')
           },
           {
             path: 'dota2',
-            name: 'future',
             beforeEnter: (to, from, next) => {
-              matches.mutations.filterMatchesByGame(matches.state, {type: 2, logo: '/img/dota2.png', name: 'Dota 2'});
+              matches.mutations.filterMatchesByGame(matches.state, {type: 2, logo: '/img/dota2.png', name: 'Dota 2', url: 'dota2'});
+              betBlock.mutations.hideBlock(betBlock.state);
               next();
+
             },
             component: () => import('./components/main/matches/Matches.vue')
           },
           {
             path: 'lol',
-            name: 'live',
             beforeEnter: (to, from, next) => {
-              matches.mutations.filterMatchesByGame(matches.state, {type: 3, logo: '/img/lol.png', name: 'League of Legends'});
+              matches.mutations.filterMatchesByGame(matches.state, {type: 3, logo: '/img/lol.png', name: 'League of Legends', url: 'lol'});
+              betBlock.mutations.hideBlock(betBlock.state);
               next();
             },
+            component: () => import('./components/main/matches/Matches.vue')
+          },
+          {
+            path: 'ow',
+            beforeEnter: (to, from, next) => {
+              matches.mutations.filterMatchesByGame(matches.state, {type: 4, logo: '/img/ow.png', name: 'Owerwatch', url: 'ow'});
+              betBlock.mutations.hideBlock(betBlock.state);
+              next();
+            },
+            component: () => import('./components/main/matches/Matches.vue')
+          },
+          {
+            path: '/:id',
+            name: 'betBlock',
             component: () => import('./components/main/matches/Matches.vue')
           }
         ]

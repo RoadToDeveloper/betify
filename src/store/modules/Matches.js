@@ -1,9 +1,15 @@
+import active from "./Active.js"
+import future from "./Future.js"
+
+
 export default {
 	namespaced: true,
 	state: {
 		matches: [],
 		headerLogo: '',
 		activeGame: '',
+		shortActiveGameName: '',
+		searchValue: '',
 		activeGameId: null,
 		matchesByStatus: {
 			active: true,
@@ -17,16 +23,19 @@ export default {
 			return state.matches;
 		},
 		headerLogo(state) {
-			return state.headerLogo
+			return state.headerLogo;
 		},
 		activeGame(state) {
-			return state.activeGame
+			return state.activeGame;
 		},
 		activeGameId(state) {
 			return state.activeGameId;
 		},
 		matchesByStatus(state) {
-			return state.matchesByStatus
+			return state.matchesByStatus;
+		},
+		searchValue(state) {
+			return state.searchValue;
 		}
 	},
 	mutations: {
@@ -38,20 +47,25 @@ export default {
 			state.matchesByStatus[type] = true;
 		},
 		filterMatchesByGame(state, data) {
-			for (let i = 0; i < state.matches.length; i++) {
-				if (state.matches[i].gameid == data.type) state.matches[i].show = true;
-					else state.matches[i].show = false
-			}
 			state.headerLogo = data.logo;
 			state.activeGame = data.name;
 			state.activeGameId = data.type;
-			console.log("я тут")
+			state.shortActiveGameName = data.url;
 		},
 		getMatches(state, matchData) {
 			state.matches = matchData;
-		}
-	},
-	actions: {
+		},
+		startSearch(state, payLoad) {
 
+		},
+		searchMatch(state, value) {
+			let searchMatches = [];
+			state.searchValue = value;
+			if (state.matchesByStatus.active == true) searchMatches = active.matches
+			else if (state.matchesByStatus.future == true) searchMatches = future.matches
+			// else if (state.matchesByStatus.live == true)
+			// else if (state.matchesByStatus.past == true)
+			
+		}
 	}
 }

@@ -23,7 +23,7 @@
 						:teamFirst = "match.team1name"
 						:teamSecond = "match.team2name"
 						:game = "match.gameid"
-						:show = "match.show"
+						v-show = "match.gameid == activeGameId"
 						:format = "`Best-of-${match.format}`"
 						:id = "match.id"
 						:tournament = "match.tournament"

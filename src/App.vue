@@ -49,6 +49,9 @@
   import AppWithdraw from './components/main/popup/Withdraw.vue'
   import {mapGetters} from 'vuex'
   import {mapMutations} from 'vuex'
+  import {mapActions} from 'vuex'
+  import getTime from './filters/getTime.js'
+  import getDate from './filters/getDate.js'
 
   export default {
     created() {
@@ -59,7 +62,6 @@
            this.fillMatches(data);
            //распределение матчей по типу
           for (let i = 0; i < this.matches.length; i++) {
-            this.$set(this.matches[i], 'show', true)
             if (this.matches[i].status == 2) this.pushPast(this.matches[i]);
             else if (this.matches[i].status == 1) {
               this.pushActive(this.matches[i]);
@@ -70,10 +72,51 @@
               this.pushFuture(this.matches[i]);
             } 
           }
-          console.log(this.activeMatches);
-          console.log(this.liveMatches);
+          // console.log(this.activeMatches);
+          // console.log(this.liveMatches);
           console.log(this.futureMatches);
           // this.filterMatchesByGame({type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
+
+          //открытие матча, если пользователь переходит к нему по ссылке
+          if (this.$router.currentRoute.name == "betBlock") {
+            let match;
+            for (let i = 0; i < this.matches.length; i++) {
+               if (this.matches[i].id == this.$router.currentRoute.params.id) {
+                  let liveMatch = false;
+                  match = this.matches[i];
+                  if (match.status == 1) liveMatch = true;
+                    else liveMatch = false; 
+                  console.log(match);
+                  this.getInfoFromApi({
+                      coefFirst: match.coefficients[0],  
+                      coefSecond: match.coefficients[1], 
+                      date: getDate(match.datetime.split(' ')[0]),
+                      time: getTime(match.datetime.split(' ')[1]),
+                      logoFirst: "http://betify.xyz/logo/"+match.team1id+"."+match.team1extension,
+                      logoSecond: "http://betify.xyz/logo/"+match.team2id+"."+match.team2extension,
+                      moneyFirst: match.money1,
+                      moneySecond: match.money2,
+                      percentageFirst: ((match.money1 + 1) / (match.money1 + match.money2 + 2) * 100).toFixed(0) + '%',
+                      percentageSecond: ((match.money2 + 1) / (match.money1 + match.money2 + 2) * 100).toFixed(0) + '%',
+                      scoreFirst: match.score.split(':')[0],
+                      scoreSecond: match.score.split(':')[1],
+                      firstChoose: match.team1name,
+                      secondChoose: match.team2name,
+                      game: match.gameid,
+                      format: "Best-of-"+match.format,
+                      id: match.id,
+                      tournament: match.tournament,
+                      betName: 'Выбор события и ставка',
+                      betId: null,
+                      liveMatch: liveMatch,
+                      eventType: '',
+                      readyBet: 0,
+                      coef: 0
+                  });
+               } 
+            }            
+          }
+          
        });
 
     },
@@ -107,6 +150,9 @@
       })
     },
     methods: {
+      ...mapActions('betBlock', {
+        getInfoFromApi: 'getInfoFromApi'
+      }),
       ...mapMutations('betBlock', {
         hideBlock: 'hideBlock'
       }),
@@ -126,6 +172,10 @@
         filterMatchesByGame: 'filterMatchesByGame',
         fillMatches: 'getMatches'
       })   
+    },
+    filters: {
+      getTime,
+      getDate
     },
     components: {
       AppHeader,

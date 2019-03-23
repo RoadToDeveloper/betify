@@ -41,7 +41,7 @@
 										}
 									)">
 				<i>{{ moneyFirst }} ₽</i>
-				<span>{{ coefFirst }} - {{ percentageFirst }}</span>
+				<span>x{{ coefFirst }} - {{ percentageFirst }}</span>
 			</div>			
 		</div>
 		<div class="item-vs col-auto">
@@ -79,7 +79,7 @@
 										}
 									)">
 				<i>{{ moneySecond }} ₽</i>
-				<span>{{ coefSecond }} - {{ percentageSecond }}</span>
+				<span>x{{ coefSecond }} - {{ percentageSecond }}</span>
 			</div>
 			<img :src="logoSecond" alt="">
 			<span>{{ teamSecond }}</span>
@@ -113,6 +113,8 @@
 										}
 									)"
 				>
+				<!-- <div class="item-extra col-auto" @mousedown="test(id)"
+				> -->
 			Подробнее
 			<!-- <img src="../../../../../public/img/arrow-right.png" alt=""> -->
 			<i class="fas fa-arrow-right"></i>
@@ -187,7 +189,10 @@
 		methods: {
 			...mapActions('betBlock', {
 				getInfoFromApi: 'getInfoFromApi'
-			})
+			}),
+			test(id) {
+				this.$router.push(`/${id}`)
+			}
 		}
 	}
 </script>

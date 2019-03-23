@@ -46,17 +46,10 @@
 					class: ""
 				},
 				{
-					name: "HearthStone",
+					name: "Owerwatch",
 					gameid: "4",
-					img: "/img/hs.png",
-					url: "hs",
-					class: ""
-				},
-				{
-					name: "HotS",
-					gameid: "5",
-					img: "/img/hots.png",
-					url: "hots",
+					img: "/img/ow.png",
+					url: "ow",
 					class: ""
 				}				
 			]
@@ -71,10 +64,11 @@
 				filterMatches: 'filterMatchesByGame'
 			}),
 			gameActive(i, data) {
-				for (let game of this.games) game.class="";
-				this.games[i].class="active";
+				
 				// this.filterMatches(data);
 				this.$router.push(`/${data.url}`);
+				for (let game of this.games) game.class="";
+				this.games[i].class="active";
 			}
 		}
 	}

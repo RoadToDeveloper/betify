@@ -23,6 +23,7 @@
 				<input class="header-menu-search-input" type="text" placeholder="Например: Virtus.pro"							
 							@focus = "searchActive"
 							@blur = "searchInactive"
+							@input = "searchMatch($event.target.value)"
 				>
 			</div>
 			<div class="header-menu-right_part col-7">								
@@ -103,6 +104,12 @@
 			searchInactive(e) {
 				this.inputClass = 'input-inactive';
 				e.target.value = '';
+			},
+			...mapMutations('matches', {
+	        searchMatch: 'searchMatch'
+	      }),
+			doSearch(e) {
+				console.log(e.target.value)
 			}
 		},
 		components: {

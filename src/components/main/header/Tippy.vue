@@ -37,7 +37,7 @@
 		border: 1px solid #373f53		
 		transition: all 0.5s
 		&-icon
-			padding-right: 1px
+			padding-right: 0px
 		&:hover
 			cursor: pointer
 			color: rgba(255, 255, 255, 0.4)

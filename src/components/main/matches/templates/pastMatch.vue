@@ -12,7 +12,7 @@
 			<img :src="logoFirst" alt="">	
 			<div class="item-money-wrap">
 				<i>{{ moneyFirst }} ₽</i>
-				<span>{{ coefFirst }} - {{ percentageFirst }}</span>
+				<span>x{{ coefFirst }} - {{ percentageFirst }}</span>
 			</div>			
 		</div>
 		<div class="item-vs col-auto">
@@ -23,7 +23,7 @@
 		<div class="item-second_team col">
 			<div class="item-money-wrap">
 				<i>{{ moneySecond }} ₽</i>
-				<span>{{ coefSecond }} - {{ percentageSecond }}</span>
+				<span>x{{ coefSecond }} - {{ percentageSecond }}</span>
 			</div>
 			<img :src="logoSecond" alt="">
 			<span>{{ teamSecond }}</span>
