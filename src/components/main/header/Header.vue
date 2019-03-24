@@ -5,19 +5,23 @@
 			Betify.
 		</div>
 
-		<div class="user_login col-3 row align-items-center">
-			<img class="user_login-img" src="https://pp.userapi.com/c836124/v836124545/2cf59/YkcciolvVFg.jpg?ava=1" alt="">
-			<span class="user_login-name">Ильин Сергей</span>
+		<div class="user_login col-3 row align-items-center" v-if="userLogin">
+			<img class="user_login-img" :src="userData.img" alt="">
+			<span class="user_login-name">{{userData.name}}</span>
 			<span class="user_login-money">
-				<i>512</i>₽
+				<i>{{userData.balance}}</i>₽
 			</span>
 			<img src="../../../../public/img/deposit.png" alt="" class="user_login-deposit" @click="showPopup('deposit')">
 			<img src="../../../../public/img/withdraw.png" alt="" class="user_login-withdraw" @click="showPopup('withdraw')">			
 		</div>
 
-		<div class="user-unlogin" v-if="false"></div>
+		<div class="user_unlogin col-3 row align-items-center" v-else>
+			<span>Войти:</span>
+			<i class="fab fa-steam" @click="authSteam()"></i>
+			<i class="fab fa-vk" @click="authVk()"></i>
+		</div>
 
-		<div class="header-menu col-5 row justify-content-between">
+		<div class="header-menu col-5 row justify-content-between" :class="userLoginSearchClass">
 			<div class="header-menu-search col-5" :class = "inputClass">
 				<i class="fas fa-search header-menu-search-icon"></i>
 				<input class="header-menu-search-input" type="text" placeholder="Например: Virtus.pro"							
@@ -57,8 +61,8 @@
 				</span>				
 			</div>
 		</div>
-		<div class="header-exit_wrapper col-1">
-			<div class="header-exit_wrapper-btn" v-if="">
+		<div class="header-exit_wrapper col-1" v-if="userLogin" @click="logout()">
+			<div class="header-exit_wrapper-btn" >
 				<!-- <i class="fas fa-room-closed"></i> -->
 				<!-- <img src="../../../public/img/exit.png" alt=""> -->
 				<span>Выйти</span>					
@@ -71,7 +75,9 @@
 
 <script>
 	import AppTippy from './Tippy'
+	import {mapActions} from 'vuex'
 	import {mapMutations} from 'vuex'
+	import {mapGetters} from 'vuex'
 
 	export default {
 		data: () => ({
@@ -94,9 +100,24 @@
 				// }
 			]
 		}),
+		computed: {
+			...mapGetters('user', {
+				userLogin: 'userLogin',
+				userData: 'userData'
+			}),
+			userLoginSearchClass() {
+				if (this.userLogin == true) return "col-5"
+					else return "col-6"
+			}
+		},
 		methods: {
 			...mapMutations('popups', {
 	        showPopup: 'doPopup'
+	      }),
+	      ...mapActions('user', {
+	        authVk: 'authVk',
+	        authSteam: 'authSteam',
+	        logout: 'logout'
 	      }),
 			searchActive() {
 				this.inputClass = 'input-active';
@@ -107,10 +128,7 @@
 			},
 			...mapMutations('matches', {
 	        searchMatch: 'searchMatch'
-	      }),
-			doSearch(e) {
-				console.log(e.target.value)
-			}
+	      })
 		},
 		components: {
 			AppTippy
@@ -140,6 +158,24 @@
 			text-align: left
 			span
 				color: #5a83ff
+		.user_unlogin
+			padding: 0px
+			margin-left: 0px
+			span
+				font-size: 14px				
+			i
+				margin-left: 5px
+				padding: 5px
+				font-weight: normal
+				font-size: 24px
+				color: rgba(255, 255, 255, 0.4)
+				transition: all 0.3s
+				&:hover
+					color: rgba(255, 255, 255, 0.7)
+					cursor: pointer
+					text-shadow: 0px 0px 20px #5a83ff
+			&+.header-menu .header-menu-right_part
+				padding-right: 45px
 		.user_login
 			padding: 0px
 			margin-left: 0px

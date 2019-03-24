@@ -77,8 +77,7 @@ export default {
 	},
 	actions: {
 		//обращение к апи при нажатии на кнопку "подробнее"
-		getInfoFromApi(store, betData) {
-			
+		getInfoFromApi(store, betData) {			
 			if (store.state.show == false) {
 				Vue.http.get(`http://betify.xyz/api/v1/match/getEvents/${betData.id}`)
 				.then(response => response.json())

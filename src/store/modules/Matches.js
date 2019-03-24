@@ -1,10 +1,13 @@
 import active from "./Active.js"
 import future from "./Future.js"
+import live from "./Live.js"
+import past from "./Past.js"
 
 
 export default {
 	namespaced: true,
 	state: {
+		searchMatches: [],
 		matches: [],
 		headerLogo: '',
 		activeGame: '',
@@ -56,16 +59,15 @@ export default {
 			state.matches = matchData;
 		},
 		startSearch(state, payLoad) {
-
+			state.searchMatches = [];
 		},
 		searchMatch(state, value) {
-			let searchMatches = [];
 			state.searchValue = value;
-			if (state.matchesByStatus.active == true) searchMatches = active.matches
-			else if (state.matchesByStatus.future == true) searchMatches = future.matches
-			// else if (state.matchesByStatus.live == true)
-			// else if (state.matchesByStatus.past == true)
-			
+			if (state.matchesByStatus.active == true) state.searchMatches = active.state.matches;
+			else if (state.matchesByStatus.future == true) state.searchMatches = future.state.matches;
+			else if (state.matchesByStatus.live == true) state.searchMatches = live.state.matches; 
+			else if (state.matchesByStatus.past == true) state.searchMatches = past.state.matches;
+			console.log(state.searchMatches)			
 		}
 	}
 }

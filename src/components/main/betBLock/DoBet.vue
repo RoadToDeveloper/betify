@@ -18,8 +18,8 @@
 				<button class="do_bet-choose-bet-btn col" v-if="userLogin" @submit.prevent="sendBet" :disabled="disableBet">Поставить</button>
 				<div class="do_bet-choose-bet-login col-5" v-else>
 					Вход:
-					<i class="fab fa-steam"></i>
-					<i class="fab fa-vk"></i>
+					<i class="fab fa-steam" @click="authSteam()"></i>
+					<i class="fab fa-vk" @click="authVk()"></i>
 				</div>
 			</div>
 			<div class="do_bet-choose-winning col-6">
@@ -34,16 +34,20 @@
 
 <script>
 	import {mapGetters} from 'vuex'
+	import {mapMutations} from 'vuex'
+	import {mapActions} from 'vuex'
 
 	export default {
 		data: () => ({
-			userLogin: true,
 			betSum: null,
 			exp: 0
 		}),
 		computed: {
 			...mapGetters('betBlock', {
 				info: 'info'
+			}),
+			...mapGetters('user', {
+				userLogin: 'userLogin'
 			}),
 			disableBet() {
 				if (this.betSum == null || this.choose == "") return true
@@ -54,6 +58,10 @@
 			}
 		},
 		methods: {
+			 ...mapActions('user', {
+	        	authVk: 'authVk',
+	        	authSteam: 'authSteam'
+	      }),
 			onInput(e) {
 				this.betSum = e.target.value;
 				if (/[^0-9]/.test(this.betSum)) this.betSum = null
@@ -168,6 +176,7 @@
 					border: none
 					outline: none
 					transition: all 0.3s
+					font-family: "Montserrat"
 					&:hover
 						cursor: pointer
 						background-color: #f09f39
@@ -187,7 +196,7 @@
 						transition: all 0.3s
 						&:hover
 							cursor: pointer
-							text-shadow: 0px 0px 10px #fe903b
+							text-shadow: 0px 0px 20px #5a83ff
 
 			&-winning, &-exp
 				padding: 0px

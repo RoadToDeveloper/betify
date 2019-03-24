@@ -52,14 +52,16 @@
   import {mapActions} from 'vuex'
   import getTime from './filters/getTime.js'
   import getDate from './filters/getDate.js'
+  import matches from './store/modules/Matches.js'
 
   export default {
     created() {
+      this.getUserData();
       //запрос к матчам при инициализации сайта
       this.$http.get('http://betify.xyz/api/v1/match/get')
         .then(response => response.json())
         .then(data => {
-           this.fillMatches(data);
+          this.fillMatches(data);
            //распределение матчей по типу
           for (let i = 0; i < this.matches.length; i++) {
             if (this.matches[i].status == 2) this.pushPast(this.matches[i]);
@@ -74,8 +76,7 @@
           }
           // console.log(this.activeMatches);
           // console.log(this.liveMatches);
-          console.log(this.futureMatches);
-          // this.filterMatchesByGame({type: 1, logo: '/img/csgo.png', name: 'CS:GO'});
+          // console.log(this.futureMatches);
 
           //открытие матча, если пользователь переходит к нему по ссылке
           if (this.$router.currentRoute.name == "betBlock") {
@@ -115,9 +116,11 @@
                   });
                } 
             }            
-          }
-          
-       });
+          }         
+        })
+        .catch((error) => {
+          return 0;
+        })  
 
     },
     mounted() {
@@ -152,6 +155,9 @@
     methods: {
       ...mapActions('betBlock', {
         getInfoFromApi: 'getInfoFromApi'
+      }),
+      ...mapActions('user', {
+        getUserData: 'getUserData'
       }),
       ...mapMutations('betBlock', {
         hideBlock: 'hideBlock'

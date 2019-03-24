@@ -10,6 +10,7 @@ import active from './modules/Active'
 import future from './modules/Future'
 import betBlock from './modules/betBlock'
 import popups from './modules/popups'
+import user from './modules/User'
 
 export default new Vuex.Store({
   	modules: {
@@ -19,6 +20,7 @@ export default new Vuex.Store({
   		live,
   		future,
   		betBlock,
-  		popups
+  		popups,
+  		user
   	}
 })

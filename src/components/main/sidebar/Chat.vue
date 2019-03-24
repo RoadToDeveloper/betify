@@ -2,19 +2,19 @@
 
 <template>
 	<div class="chat col-12 row">
-		<div id="chat-body" class="chat-body row col-12">
-			<div class="chat-item col-12 row" v-for="(item, index) in items" :key="index">
+		<div id="chat-body" class="chat-body row col-12" @scroll.passive="getMoreMessage()">
+			<div class="chat-item col-12 row align-self-end" v-for="(item, index) in items" :key="index">
 				<div class="col-auto row" v-if="!item.self">
-					<img class="chat-item-ava col-auto align-self-end"  alt="" :src="item.ava">
+					<img class="chat-item-ava col-auto align-self-end"  alt="" :src="item.img">
 					<div class="chat-item-msg col">
 						<span class="chat-item-msg-name">{{ item.name }}</span>
-						<p class="chat-item-msg-text">{{ item.text }}</p>				
+						<p class="chat-item-msg-text">{{ item.message }}</p>				
 					</div>
 				</div>
 				
 				<div class="col-12 row self_msg justify-content-end" v-else>
 					<div class="chat-item-msg_self col-auto">				
-						<p class="chat-item-msg_self-text">{{ item.text }}</p>				
+						<p class="chat-item-msg_self-text">{{ item.message }}</p>				
 					</div>
 				</div>
 			</div>
@@ -22,7 +22,7 @@
 		
 
 		<div class="chat-send_wrap row col-12 align-items-center">
-			<div class="chat-send_wrap-msg col-9" aria-multiline="true" @keydown.enter.prevent="sendMsg(message, userData, true)">
+			<div class="chat-send_wrap-msg col-9" aria-multiline="true" @keydown.enter.prevent="sendMsg(userMessage, userData, true)">
 				<div 	class="textarea" id="msg" role="textbox" aria-multiline="true" rows="5" contenteditable="true"
 						@focus="changeColorFocus" 
 						@blur="changeColorBlur"   
@@ -37,7 +37,7 @@
 
 			<div class="chat-send_wrap-icons col-3">
 				<svg @mouseenter="showSmiles" @mouseleave="hideSmiles" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path opacity=".4" d="M0 0h24v24H0z"/><path fill="#ffffff" fill-rule="nonzero" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12zm18.3 0a8.3 8.3 0 1 0-16.6 0 8.3 8.3 0 0 0 16.6 0zm-11.05-.5a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm5.5 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/><path stroke="#ffffff" stroke-width="1.7" d="M9 14.85c.833.767 1.833 1.15 3 1.15s2.167-.383 3-1.15" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
-				<img src="../../../../public/img/send.png" alt="" @click="sendMsg(message, userData, true)">
+				<img src="../../../../public/img/send.png" alt="" @click="sendMsg(userMessage, userData, true)">
 			</div>
 			
 			<transition name="slide">
@@ -51,146 +51,54 @@
 					>
 				</div>
 			</transition>
-			
-
 		</div>
 	</div>
 </template>
 
 <script>
-	
-	function scrollChat() {
+	import {mapGetters} from 'vuex'
+
+	var prevHeight;
+	var updateFlag = false;
+	function scrollChat() {		
 		let block = document.getElementById("chat-body");
   		block.scrollTop = block.scrollHeight;
 	}
 	
+	
 	export default {
-		mounted() {
-			scrollChat();
+		created() {
+			this.$http.get('http://betify.xyz/api/v1/chat/get')
+				.then(response => response.json())
+        		.then(data => {
+        			console.log(data)
+        			for (let i = 0; i < data.length; i++) {
+        				//если челвоек не залогинен, то у него нет сообщений в чате
+        				if (this.userData === undefined) {
+							data[i].self = false;
+        				}
+        				//если айдишник отправителя совпадает с айдишником пользователя, то считаем, что это его сообщение
+        				else if (data[i].userid == this.userData.id) data[i].self = true
+        				//и наоборот
+        				else data[i].self = false       				
+        				this.items.unshift(data[i]);
+        			}        			
+        		})
+		},
+		mounted() {	
+			//этот таймаут для корректного скролла чата при инициализации, так как нужно время на рендер сообщений			
+			setTimeout(()=>{
+				scrollChat();	
+			}, 150)
+			//узнаем изначальную высоту чата
+			var prevHeight = document.getElementById("chat-body").scrollHeight;
+		},
+		updated() {
+			document.getElementById("chat-body").scrollTop = document.getElementById("chat-body").scrollHeight - prevHeight;
+			prevHeight = document.getElementById("chat-body").scrollHeight;								
 		},
 		data: () => ({
-			items: [
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo1.jpg',
-					text: 'Никита ты пидор?',
-					self: false
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo2.jpg',
-					text: 'Мужики,верификациянужнаМужики,верификациянужнаМужики,верификация нужна?',
-					self: false
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo1.jpg',
-					text: 'Мужики, верификация нужна?',
-					self: true
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo2.jpg',
-					text: 'Мужики,верификациянужнаМужики,верификациянужнаМужики,верификация нужна?',
-					self: false
-				},{
-					name: 'Сергей Ильин',
-					ava: '/img/photo1.jpg',
-					text: 'Никита ты пидор?',
-					self: false
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo2.jpg',
-					text: 'Мужики,верификациянужнаМужики,верификациянужнаМужики,верификация нужна?',
-					self: false
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo1.jpg',
-					text: 'Мужики, верификация нужна?',
-					self: true
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo2.jpg',
-					text: 'Мужики,верификациянужнаМужики,верификациянужнаМужики,верификация нужна?',
-					self: false
-				},{
-					name: 'Сергей Ильин',
-					ava: '/img/photo1.jpg',
-					text: 'Никита ты пидор?',
-					self: false
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo2.jpg',
-					text: 'Мужики,верификациянужнаМужики,верификациянужнаМужики,верификация нужна?',
-					self: false
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo1.jpg',
-					text: 'Мужики, верификация нужна?',
-					self: true
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo2.jpg',
-					text: 'Мужики,верификациянужнаМужики,верификациянужнаМужики,верификация нужна?',
-					self: false
-				},{
-					name: 'Сергей Ильин',
-					ava: '/img/photo1.jpg',
-					text: 'Никита ты пидор?',
-					self: false
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo2.jpg',
-					text: 'Мужики,верификациянужнаМужики,верификациянужнаМужики,верификация нужна?',
-					self: false
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo1.jpg',
-					text: 'Мужики, верификация нужна?',
-					self: true
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo2.jpg',
-					text: 'Мужики,верификациянужнаМужики,верификациянужнаМужики,верификация нужна?',
-					self: false
-				},{
-					name: 'Сергей Ильин',
-					ava: '/img/photo1.jpg',
-					text: 'Никита ты пидор?',
-					self: false
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo2.jpg',
-					text: 'Мужики,верификациянужнаМужики,верификациянужнаМужики,верификация нужна?',
-					self: false
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo1.jpg',
-					text: 'Мужики, верификация нужна?',
-					self: true
-				},
-				{
-					name: 'Сергей Ильин',
-					ava: '/img/photo2.jpg',
-					text: 'Мужики,верификациянужнаМужики,верификациянужнаМужики,верификация нужна?',
-					self: false
-				}
-			],
-			userData: {
-				name: 'Илиьн Сергей',
-				ava: '/img/photo1.jpg'
-			},
+			items: [],
 			smiles: [
 				{
 					name: '4Head',
@@ -293,24 +201,49 @@
 					url: '/img/smiles/WutFace.png'
 				},
 			],
-			message: '',
+			userMessage: '',
 			smilesVisible: false,
 			showPlaceholder: true,
 			placeholderColor: ''
 		}),
 		computed: {
+			...mapGetters('user', {
+				userData: 'userData'
+			}),
 			removePlaceholder() {
-				if (this.message === '') { return this.showPlaceholder = true}
+				if (this.userMessage === '') { return this.showPlaceholder = true}
 					else {return this.showPlaceholder = false}
 			}
 		},
 		methods: {
+			getMoreMessage() {							
+				if (document.getElementById("chat-body").scrollTop == 0) {
+					
+					this.$http.get(`http://betify.xyz/api/v1/chat/get/${this.items.length}`)
+						.then(response => response.json())
+		        		.then(data => {
+		        					        			
+		        			for (let i = 0; i < data.length; i++) {
+		        				updateFlag = true;
+		        				//если челвоек не залогинен, то у него нет сообщений в чате
+		        				if (this.userData === undefined) {
+									data[i].self = false;
+		        				}
+		        				//если айдишник отправителя совпадает с айдишником пользователя, то считаем, что это его сообщение
+		        				else if (data[i].userid == this.userData.id) data[i].self = true
+		        				//и наоборот
+		        				else data[i].self = false       				
+		        				this.items.unshift(data[i]);		        				
+		        			}	        			    			
+		        		})
+				}				
+			},
 			onInput(e) {
-				if(!e.ctrlKey) this.message += e.key;	
-				scrollChat();
+				if(!e.ctrlKey) this.userMessage += e.key;	
+				
 			},
 			test(e) {
-				this.message = document.getElementById("msg").innerText;
+				this.userMessage = document.getElementById("msg").innerText;
 			},
 			changeColorFocus() {
 				this.placeholderColor = "placeholderOnFocus"
@@ -321,16 +254,14 @@
 			sendMsg(text, user, self) {
 				if (text != '') {
 					document.getElementById("msg").innerText = '';
-					this.message = '';
+					this.userMessage = '';
 					this.items.push({
 						name: user.name,
-						ava: user.ava,
-						text: text,
+						img: user.img,
+						message: text,
 						self: self
 					});
-					setTimeout(()=>{
-						scrollChat()
-					}, 10)
+					
 				}									
 			},
 			showSmiles() {
