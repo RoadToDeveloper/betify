@@ -46,7 +46,7 @@
 					class: ""
 				},
 				{
-					name: "Owerwatch",
+					name: "Overwatch",
 					gameid: "4",
 					img: "/img/ow.png",
 					url: "ow",

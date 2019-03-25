@@ -68,11 +68,11 @@
 				this.exp = this.betSum * 10;
 			},
 			sendBet() {
-				console.log({
-					id: this.info.betId,
-					choose: this.info.choose,
-					bet: this.betSum
-				})
+				var data = new FormData;
+				data.set('eventid', this.info.betId);
+				data.set('amount', this.betSum);				
+				data.set('choice', this.info.choose);
+				this.$http.post(`http://betify.xyz/api/v1/bet/add`, data)
 			}
 		}
 	}

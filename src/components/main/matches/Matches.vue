@@ -43,6 +43,15 @@
 
 	export default {
 		mounted() {
+			this.sockets.subscribe('matchUpdate', (data) => {
+			   console.log(data);
+			   for (let i = 0; i < this.allMatches.length; i++) {
+			   	if (this.allMatches[i].id == data.id) {
+			   		if (this.allMatches[i].status == 0) this.updateFutureMatch(data);
+			   		else if (this.allMatches[i].status == 1) this.updateLiveMatch(data);
+			   	}
+			   }
+			});
 			let leftPartWidth = getComputedStyle(document.getElementById("leftPart")).width;
       	document.getElementById("matchesTypes").style.maxWidth = leftPartWidth;
 		},
@@ -81,6 +90,12 @@
 		methods: {
 			...mapMutations('matches', {
 				filterMatchesByStatus: 'filterMatchesByStatus'
+			}),
+			...mapMutations('future', {
+				updateFutureMatch: 'updateMatch'
+			}),
+			...mapMutations('live', {
+				updateLiveMatch: 'updateMatch'
 			}),
 			sortByStatus(e, type) {
 				var items = document.querySelectorAll(".matches-type-items-item");

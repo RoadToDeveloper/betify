@@ -2,24 +2,8 @@
 
 <template>
 	<div class="chat col-12 row">
-		<div id="chat-body" class="chat-body row col-12" @scroll.passive="getMoreMessage()">
-			<div class="chat-item col-12 row align-self-end" v-for="(item, index) in items" :key="index">
-				<div class="col-auto row" v-if="!item.self">
-					<img class="chat-item-ava col-auto align-self-end"  alt="" :src="item.img">
-					<div class="chat-item-msg col">
-						<span class="chat-item-msg-name">{{ item.name }}</span>
-						<p class="chat-item-msg-text">{{ item.message }}</p>				
-					</div>
-				</div>
-				
-				<div class="col-12 row self_msg justify-content-end" v-else>
-					<div class="chat-item-msg_self col-auto">				
-						<p class="chat-item-msg_self-text">{{ item.message }}</p>				
-					</div>
-				</div>
-			</div>
-		</div>
-		
+
+		<chat-body :chatError="chatError" :errorText="errorText" :smiles="smiles"></chat-body>
 
 		<div class="chat-send_wrap row col-12 align-items-center">
 			<div class="chat-send_wrap-msg col-9" aria-multiline="true" @keydown.enter.prevent="sendMsg(userMessage, userData, true)">
@@ -57,48 +41,22 @@
 
 <script>
 	import {mapGetters} from 'vuex'
+	import chatBody from './ChatBody.vue'
 
-	var prevHeight;
-	var updateFlag = false;
 	function scrollChat() {		
 		let block = document.getElementById("chat-body");
   		block.scrollTop = block.scrollHeight;
 	}
-	
-	
+		
 	export default {
-		created() {
-			this.$http.get('http://betify.xyz/api/v1/chat/get')
-				.then(response => response.json())
-        		.then(data => {
-        			console.log(data)
-        			for (let i = 0; i < data.length; i++) {
-        				//если челвоек не залогинен, то у него нет сообщений в чате
-        				if (this.userData === undefined) {
-							data[i].self = false;
-        				}
-        				//если айдишник отправителя совпадает с айдишником пользователя, то считаем, что это его сообщение
-        				else if (data[i].userid == this.userData.id) data[i].self = true
-        				//и наоборот
-        				else data[i].self = false       				
-        				this.items.unshift(data[i]);
-        			}        			
-        		})
-		},
 		mounted() {	
 			//этот таймаут для корректного скролла чата при инициализации, так как нужно время на рендер сообщений			
 			setTimeout(()=>{
 				scrollChat();	
 			}, 150)
-			//узнаем изначальную высоту чата
-			var prevHeight = document.getElementById("chat-body").scrollHeight;
-		},
-		updated() {
-			document.getElementById("chat-body").scrollTop = document.getElementById("chat-body").scrollHeight - prevHeight;
-			prevHeight = document.getElementById("chat-body").scrollHeight;								
-		},
+		},		
 		data: () => ({
-			items: [],
+			newItem: {},
 			smiles: [
 				{
 					name: '4Head',
@@ -204,7 +162,9 @@
 			userMessage: '',
 			smilesVisible: false,
 			showPlaceholder: true,
-			placeholderColor: ''
+			placeholderColor: '',
+			chatError: false,
+			errorText: ""
 		}),
 		computed: {
 			...mapGetters('user', {
@@ -216,31 +176,8 @@
 			}
 		},
 		methods: {
-			getMoreMessage() {							
-				if (document.getElementById("chat-body").scrollTop == 0) {
-					
-					this.$http.get(`http://betify.xyz/api/v1/chat/get/${this.items.length}`)
-						.then(response => response.json())
-		        		.then(data => {
-		        					        			
-		        			for (let i = 0; i < data.length; i++) {
-		        				updateFlag = true;
-		        				//если челвоек не залогинен, то у него нет сообщений в чате
-		        				if (this.userData === undefined) {
-									data[i].self = false;
-		        				}
-		        				//если айдишник отправителя совпадает с айдишником пользователя, то считаем, что это его сообщение
-		        				else if (data[i].userid == this.userData.id) data[i].self = true
-		        				//и наоборот
-		        				else data[i].self = false       				
-		        				this.items.unshift(data[i]);		        				
-		        			}	        			    			
-		        		})
-				}				
-			},
 			onInput(e) {
-				if(!e.ctrlKey) this.userMessage += e.key;	
-				
+				if(!e.ctrlKey) this.userMessage += e.key;					
 			},
 			test(e) {
 				this.userMessage = document.getElementById("msg").innerText;
@@ -252,16 +189,37 @@
 				this.placeholderColor = "placeholderOnBlur"
 			},
 			sendMsg(text, user, self) {
-				if (text != '') {
-					document.getElementById("msg").innerText = '';
-					this.userMessage = '';
-					this.items.push({
-						name: user.name,
-						img: user.img,
-						message: text,
-						self: self
-					});
-					
+				if (text != '') {					
+					var data = new FormData;
+					data.set('message', text);
+					this.$http.post(`http://betify.xyz/api/v1/chat/add`, data)
+					.then((response) => {						
+						if (response.body.response == "error") {
+							this.chatError = true;
+							if (response.body.error.code == 5) {
+								this.errorText = "Вы можете отправлять сообщение раз в 5 секунд.";	
+								setTimeout(()=>{
+									this.chatError = false;
+								}, 5000)														
+							}
+							else if (response.body.error.code == 6) {
+								this.errorText = "Слишком короткое сообщение";	
+								setTimeout(()=>{
+									this.chatError = false;
+								}, 1500)						
+							}							
+						}
+						else {
+							document.getElementById("msg").innerText = '';
+							this.userMessage = '';
+						}
+						//таймаут на 10 секунд для рендеринга сообщения, так как watch в
+						//chatBody реагирует на изменение массива а не рендер элементов
+						setTimeout(()=> {
+							scrollChat();
+						}, 10)
+					})	
+
 				}									
 			},
 			showSmiles() {
@@ -276,9 +234,16 @@
 			},
 			addSmile(smile) {
 				document.getElementById("msg").innerText += " "+smile;
-				this.message += " "+smile;
+				this.userMessage += " "+smile;
 				this.showPlaceholder = false;
+				setTimeout(()=>{
+					document.getElementById("msg").focus();
+				}, 100)
+				
 			}
+		},
+		components: {
+			chatBody
 		}
 	}
 </script>
@@ -310,52 +275,7 @@
 		flex: 1
 		flex-direction: column
 		padding: 0px 20px 15px 43px	
-		&-body
-			margin-left: 0px
-			padding: 0px 0px 10px 0px
-			flex: 1
-			overflow-y: scroll
-			&::-webkit-scrollbar-thumb
-				background-color: lightgray
-			&::-webkit-scrollbar
-				background-color: transparent
-				width: 0px
-		&-item:first-of-type
-			margin-top: 10px
-		&-item
-			margin-bottom: 7px
-			margin: 0px 0px 7px 0px	
-			padding: 0px	
-			align-self: flex-end
-			&>div
-				padding: 0px
-				margin-left: 0px
-			.self_msg, .not_self_msg	
-				margin-left: 0px
-				padding: 0px
-			&-ava
-				width: 30px
-				height: 30px
-				border-radius: 50%
-				padding: 0px
-			&-msg, &-msg_self
-				padding: 5px 14px
-				background-color: #1d243b
-				margin: 0px 0px 0px 8px
-				font-size: 14px
-				border-radius: 20px 20px 20px 0px
-				&-name
-					color: #6f7481					
-				&-text
-					color: rgba(255,255,255,0.7)
-					margin: 2px 0px 0px 0px
-					word-break: break-all
-			&-msg_self
-				background-color: #293c74
-				border-radius: 20px 20px 0px 20px
-				margin: 0px
-				&-name
-					color: rgba(255, 255, 255, 0.4)
+		
 		&-send_wrap	
 			margin-top: 0px
 			margin-left: 0px	
