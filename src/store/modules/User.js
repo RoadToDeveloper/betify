@@ -15,13 +15,20 @@ export default {
 		}
 	},
 	mutations: {
-
+		cutBalance(state, value) {
+			console.log(state.userData.balance)
+			state.userData.balance = state.userData.balance + value;
+		}
 	},
 	actions: {
 		logout(store) {
 			Vue.http.get(`http://betify.xyz/api/v1/user/logout`)
 			.then((response) => {
-				if (response.ok == true) store.state.userLogin = false;
+				if (response.ok == true) {
+					store.state.userLogin = false;
+					this._vm.$socket.emit('userID', null)
+					store.state.userData = [];
+				} 
 			}, response => {
 				return 0;
  			});
@@ -57,7 +64,8 @@ export default {
 					// store.state.userLogin = false;
 				})				
 				.then(data => {	   		     							
-					store.state.userData = data;							
+					store.state.userData = data;
+					this._vm.$socket.emit('userID', store.state.userData.id)							
 		   	})
 		   	.catch((error) => {
  					return 0

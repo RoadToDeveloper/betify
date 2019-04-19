@@ -1,14 +1,14 @@
 <template>
 	<div class="main_left col-3 row" id="main_left">
 		<div class="main_left-header col-12 row" :class="chatShadow">
-			<div class="main_left-header-chat_btn col-4" @click="activateChat" :class="activeChat">
+			<div class="main_left-header-chat_btn col-4" @mousedown="activateChat" :class="activeChat">
 				<div class="main_left-header-chat_btn-img_wrapper">
 					<img src="../../../../public/img/chat.png" alt="">
 				</div>				
 				Чат
 			</div>
 			<div class="col-2"></div>
-			<div class="main_left-header-games_btn col-4" @click="activateGames" :class="activeGames">
+			<div class="main_left-header-games_btn col-4" @mousedown="activateGames" :class="activeGames">
 				<div class="main_left-header-games_btn-img_wrapper">
 					<img src="../../../../public/img/joystick.png" alt="">
 				</div>				

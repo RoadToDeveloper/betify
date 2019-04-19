@@ -55,7 +55,8 @@ export default {
 				}
 				body.onclick = function(e) {
 					let betBlockWidth = parseInt(getComputedStyle(document.getElementById("block_wrap")).width);
-					if (e.pageX < window.innerWidth - betBlockWidth) {
+					if (e.pageX == 0) return 0					
+					else if (e.pageX < window.innerWidth - betBlockWidth) {
 						state.show = false;
 						body.onkeydown = function(e) {return 0};
 						body.onclick = function(e) {return 0};
@@ -68,6 +69,7 @@ export default {
 		//информация для блока со ставкой при клике на событие
 		pushBetInfo(state, data) {
 			state.info.choose = data.choose;
+			state.info.betChoose = data.betChoose;
 			state.info.coef = data.coef;
 			state.info.betName = data.betName;
 			if (data.eventType == "Общие события") state.info.eventType = "" 
@@ -79,6 +81,7 @@ export default {
 		//обращение к апи при нажатии на кнопку "подробнее"
 		getInfoFromApi(store, betData) {			
 			if (store.state.show == false) {
+				store.commit('pushInfoToBetBLock', betData);									
 				Vue.http.get(`http://betify.xyz/api/v1/match/getEvents/${betData.id}`)
 				.then(response => response.json())
 				.then(data => {	 
@@ -110,27 +113,24 @@ export default {
 		     				store.state.betItems[mapCounter].push(data[i]);
 		     			}
 		     		} 
-					
+		     		//показываем блок только после рендера событий, чтобы не лагало появление
+		     		store.state.show = true;	
+		     		//быстрая ставка, если команда сразу выбрана, небольшой таймаут на рендер
+		     		if (betData.readyBet == 1 || betData.readyBet == 2) {
+						store.commit('pushBetInfo', betData);
+						setTimeout(() => {
+			     			//подсвечиваем ставку и делаем фокус на инпут
+			     			var items = document.querySelectorAll(".block_wrap-body-extra_events .item-first, .block_wrap-body-extra_events .item-second");
+			     			for (let item of items) {
+			     				item.classList.remove("activeItem")
+			     			}
+			     			if (betData.readyBet == 1) document.querySelector(".block_wrap-body-extra_events-items:first-of-type .item div:first-of-type").classList.add("activeItem")
+			     				else document.querySelector(".block_wrap-body-extra_events-items:first-of-type .item div:last-of-type").classList.add("activeItem")
+			     					document.getElementById("betInput").focus(); 
+			     		}, 50)	     		    			
+					} 				
 		     	});
 		     	router.push(`/${betData.id}`);
-		     	//таймауты стоят чтобы не лагало появление блока при рендеринге
-		     	setTimeout(() => {
-					store.commit('pushInfoToBetBLock', betData);
-					store.state.show = true; 
-				}, 50)
-				if (betData.readyBet == 1 || betData.readyBet == 2) {
-					store.commit('pushBetInfo', betData);
-					setTimeout(() => {
-		     			//подсвечиваем ставку и делаем фокус на инпут
-		     			var items = document.querySelectorAll(".block_wrap-body-extra_events .item-first, .block_wrap-body-extra_events .item-second");
-		     			for (let item of items) {
-		     				item.classList.remove("activeItem")
-		     			}
-		     			if (betData.readyBet == 1) document.querySelector(".block_wrap-body-extra_events-items:first-of-type .item div:first-of-type").classList.add("activeItem")
-		     				else document.querySelector(".block_wrap-body-extra_events-items:first-of-type .item div:last-of-type").classList.add("activeItem")
-		     					document.getElementById("betInput").focus(); 
-		     		}, 50)	     		    			
-				} 
 			}			
 		}
 	}

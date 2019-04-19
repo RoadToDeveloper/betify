@@ -51,7 +51,7 @@ export default new router({
           {
             path: '/ow',
             beforeEnter: (to, from, next) => {
-              matches.mutations.filterMatchesByGame(matches.state, {type: 4, logo: '/img/ow.png', name: 'Owerwatch', url: 'ow'});
+              matches.mutations.filterMatchesByGame(matches.state, {type: 4, logo: '/img/ow.png', name: 'Overwatch', url: 'ow'});
               betBlock.mutations.hideBlock(betBlock.state);
               next();
             },

@@ -37,7 +37,8 @@
 											readyBet: 1,
 											betId: id,
 											choose: teamFirst,
-											coef: coefFirst
+											coef: coefFirst,
+											betChoose: 1
 										}
 									)">
 				<i>{{ moneyFirst }} ₽</i>
@@ -75,7 +76,8 @@
 											readyBet: 2,
 											betId: id,
 											choose: teamSecond,
-											coef: coefSecond
+											coef: coefSecond,
+											betChoose: 2
 										}
 									)">
 				<i>{{ moneySecond }} ₽</i>
@@ -161,6 +163,12 @@
 			moneySecond: {
 				type: Number
 			},
+			scoreFirst: {
+				type: String
+			},
+			scoreSecond: {
+				type: String
+			},
 			percentageFirst: {
 				type: String
 			},
@@ -231,8 +239,12 @@
 			img
 				width: 35px
 				margin: 0px 10px
+			span
+				text-align: right
 		&-second_team
 			justify-content: flex-start
+			span
+				text-align: left
 		&-vs
 			display: flex
 			align-items: center

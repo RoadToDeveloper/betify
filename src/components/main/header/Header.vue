@@ -80,6 +80,9 @@
 	import {mapGetters} from 'vuex'
 
 	export default {
+		created() {
+			this.$socket.emit('userID', this.userData.id)
+		},
 		data: () => ({
 			inputClass: '',
 			tippy: [
@@ -124,7 +127,7 @@
 			},
 			searchInactive(e) {
 				this.inputClass = 'input-inactive';
-				e.target.value = '';
+				// e.target.value = '';
 			},
 			...mapMutations('matches', {
 	        searchMatch: 'searchMatch'
@@ -305,6 +308,8 @@
 			&-logo
 				font-size: 20px
 				padding-left: 30px
+			.user_unlogin+.header-menu .header-menu-right_part
+				padding-right: 30px
 			.user_login
 				&-img
 					width: 32px

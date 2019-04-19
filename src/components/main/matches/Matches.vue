@@ -14,7 +14,8 @@
 				<span class="matches-header-date-text">Календарь событий</span>
 			</div>		
 		</div>
-
+		<!-- <button @click.prevent="doLive()">Сделать матч лайвом</button>
+		<button @click.prevent="doPast()">Сделать матч прошедшим</button> -->
 		<div class="matches-type row col-12">
 			<ul id="matchesTypes" class="matches-type-items col row">
 				<li class="matches-type-items-item type_item-active" @click="sortByStatus($event, 'active')">Активные матчи</li>
@@ -39,18 +40,30 @@
 	import AppPast from './Past'
 	import AppTournament from './Tournament'
 	import {mapMutations} from 'vuex'
+	import {mapActions} from 'vuex'
 	import {mapGetters} from 'vuex'
 
 	export default {
 		mounted() {
+			//реагирование на событие изменения матча
 			this.sockets.subscribe('matchUpdate', (data) => {
 			   console.log(data);
 			   for (let i = 0; i < this.allMatches.length; i++) {
 			   	if (this.allMatches[i].id == data.id) {
-			   		if (this.allMatches[i].status == 0) this.updateFutureMatch(data);
-			   		else if (this.allMatches[i].status == 1) this.updateLiveMatch(data);
+			   		if (this.allMatches[i].status == 0) {
+			   			this.updateActiveMatch(data);
+			   			this.updateFutureMatch(data);
+			   		} 
+			   		else if (this.allMatches[i].status == 1) {
+			   			this.updateActiveMatch(data);
+			   			this.updateLiveMatch(data);
+			   		} 
 			   	}
 			   }
+			});
+			//изменение баланса юзера
+			this.sockets.subscribe('balanceDiff', (data) => {
+			   this.cutBalance(data.diff)		   
 			});
 			let leftPartWidth = getComputedStyle(document.getElementById("leftPart")).width;
       	document.getElementById("matchesTypes").style.maxWidth = leftPartWidth;
@@ -91,11 +104,17 @@
 			...mapMutations('matches', {
 				filterMatchesByStatus: 'filterMatchesByStatus'
 			}),
-			...mapMutations('future', {
+			...mapActions('future', {
 				updateFutureMatch: 'updateMatch'
 			}),
-			...mapMutations('live', {
+			...mapActions('live', {
 				updateLiveMatch: 'updateMatch'
+			}),
+			...mapActions('active', {
+				updateActiveMatch: 'updateMatch'
+			}),
+			...mapMutations('user', {
+			 	cutBalance: 'cutBalance'
 			}),
 			sortByStatus(e, type) {
 				var items = document.querySelectorAll(".matches-type-items-item");
@@ -105,6 +124,14 @@
 				e.target.classList.add("type_item-active");
 				this.filterMatchesByStatus(type);
 			}
+			// doLive() {
+			// 	this.updateFutureMatch({status: 1, money1: 92, money2: 312, tournament: "test", id: 2332045})
+			// 	this.updateActiveMatch({status: 1, money1: 92, money2: 312, tournament: "test", id: 2332045})
+			// },
+			// doPast() {
+			// 	this.updateLiveMatch({status: 2, score: "10:15", id: 2332039})
+			// 	this.updateActiveMatch({status: 2, score: "10:15", id: 2332039})
+			// }
 		},
 		components: {
 			AppActive,

@@ -3,13 +3,13 @@
 		<div class="chat-item col-12 row align-self-end" v-for="(item, index) in items" :key="index">
 
 			<div class="col-auto row" v-if="!item.self" :class="item.class">
-				<div class="row" style="margin-left: 0px">
+				
 					<img class="chat-item-ava col-auto align-self-end"  alt="" :src="item.img">
 					<div class="chat-item-msg col">
 						<span class="chat-item-msg-name" v-show="item.firstInGroup">{{ item.name }}</span>
 						<p class="chat-item-msg-text" v-html="item.message"></p>				
 					</div>
-				</div>			
+							
 			</div>
 			
 			<div class="col-12 row self_msg justify-content-end" v-else>
@@ -50,24 +50,42 @@
         				else if (data[i].userid == this.userData.id) data[i].self = true
         				//и наоборот
         				else data[i].self = false; 
+        				
+        				//если id сообщения не совпадает с ПОСЛЕДУЮЩИМ, то считаем это последним сообщением в группе
         				if (i > 0 && data[i].userid != data[i - 1].userid) {
         					data[i].lastInGroup = true;
         					data[i].class = "not_first_in_group"
-        				}      	
+        				}   
+        				//если id совпадает, то считаем это промежуточным сообщением в группе   	
         				else if (i > 0 && data[i].userid == data[i - 1].userid) {
         					data[i].img = "";
         					data[i].class = "not_first_in_group"
         				}		
+        				//если id не совпадает с ПРЕДЫДУЩИМ сообщением, то считаем это первым сообщием в группе
+        				//причем это условие и первое формируют одиночные сообщения в совокупности
         				if (i != data.length - 1 && data[i].userid != data[i + 1].userid)	{
         					data[i].firstInGroup = true;
         					data[i].class = "first_in_group"
         					if (i > 0 && data[i].userid != data[i - 1].userid) data[i].firstInGroup = true;
-        				}      				
+        				}     
+        				// if (i = 0 && data[i].userid != data[i + 1].userid) {
+        				// 	data[i].class = "not_first_in_group"	
+        				// } 	
+
         				this.items.unshift(data[i]);
-        			};   		
+        			}; 
+        			if (data[0].userid == data[1].userid) {
+						data[0].class = "not_first_in_group"
+        			}
+        			setTimeout(()=>{
+						scrollChat();
+					}, 10)		
         		})
 		},
 		mounted() {
+			setTimeout(()=>{
+				scrollChat();
+			}, 10)
 			this.sockets.subscribe('chatNew', (data) => {
 				let text = data.message.replace(/(4Head|BabyRage|BibleThump|CoolStoryBob|EZ|FeelsBadMan|GabeN|HeyGuys|Kappa|Kreygasm|LUL|monkaS|NotLikeThis|PogChamp|PunchTrees|ResidentSleeper|roflanContent|roflanDulya|roflanEbalo|roflanGorit|roflanOld|roflanPomoika|SeemsGood|SMOrc|WutFace)/g, "<img style='width:20px' src='/img/smiles/$1.png' alt='$1'>");
 				data.message = text;
@@ -91,6 +109,7 @@
 					scrollChat();
 				}, 10)
 			})
+			scrollChat();
 			//узнаем изначальную высоту чата
 			prevHeight = document.getElementById("chat-body").scrollHeight;
 		},
@@ -124,8 +143,7 @@
 		        			this.items.unshift(data[i]);		        				
 		        		}
 		        		for (let i = 0; i <= 50; i++) {
-		        			console.log(i)
-	        				if (i > 0 && data[i].userid != data[i - 1].userid) {
+	        				if (i > 0 && i != 50 && data[i].userid != data[i - 1].userid) {
 	        					data[i].lastInGroup = true;
 	        					data[i].class = "not_first_in_group"
 	        				}      	

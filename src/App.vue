@@ -121,9 +121,24 @@
         .catch((error) => {
           return 0;
         })  
-
+      this.sockets.subscribe('matchAdd', (data) => {
+        console.log(data);
+        if (data.status == 2) this.pushPast(data);
+        else if (data.status == 1) {
+          this.pushActive(data);
+          this.pushLive(data);
+        } 
+        else if (data.status == 0) {
+          this.pushActive(data);
+          this.pushFuture(data);
+        } 
+      });
     },
     mounted() {
+      //скрипт для twitch
+      let twitchScript = document.createElement('script')
+      twitchScript.setAttribute('src', 'https://embed.twitch.tv/embed/v1.js')
+      document.head.appendChild(twitchScript)
       //позиционка
       let mainMargin = getComputedStyle(document.querySelector(".header")).height;
       document.getElementById("main").style.top = mainMargin;  
@@ -204,6 +219,7 @@
   opacity: 0
 .showPopup-enter-active
   transition: opacity 0.3s, transform 0.3s
+  display: block
 
 .showPopup-leave-active
   opacity: 0

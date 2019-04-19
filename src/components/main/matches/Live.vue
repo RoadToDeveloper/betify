@@ -1,10 +1,11 @@
 <template>
 	<div class="container col-12 row">
+	  
 		<app-tournament v-for="(group, index) in matches" 
 							:key="`l${index}`"
 							:name="group[0]"
 							:logo="group[1]"
-							v-show="group[2] == activeGameId"
+							v-show="group[2] == activeGameId && group.length > 3"
 		>
 			<live-match v-for="(match, index) in group.slice(3)"
 						:key = "match.id"
@@ -26,11 +27,15 @@
 						v-show = "match.gameid == activeGameId"
 						:format = "`Best-of-${match.format}`"
 						:id = "match.id"
+						:streamId="`l${match.id}`"
 						:tournament = "match.tournament"
+						:stream = "match.stream"
 			>
+				<div class="stream_wrap"  :id="`l${match.id}`"></div>
 			</live-match>
+
 		</app-tournament>
-		
+		<p v-if="!emptyCheck">Сожалеем, сейчас в дисциплине {{ activeGame }} нет событий данного типа</p>
 	</div>	
 </template>
 
@@ -42,12 +47,17 @@
 	import getDate from '../../../../src/filters/getDate.js'
 
 	export default {
+		data: ()=>({
+			emptyCheck: 0,
+			channel: 'DreadzTV'
+		}),
 		computed: {
 			...mapGetters('live', {
 				matches: 'matches'
 			}),
 			...mapGetters('matches', {
-				activeGameId: 'activeGameId'
+				activeGameId: 'activeGameId',
+				activeGame: 'activeGame'
 			})
 		},
 		filters: {
@@ -57,6 +67,20 @@
 		components: {
 			LiveMatch,
 			AppTournament
+		},
+		watch: {
+			matches() {
+				this.emptyCheck = 0;
+				for (let i = 0; i < this.matches.length; i++) {
+					if (this.matches[i][2] == this.activeGameId) this.emptyCheck++
+				}	
+			},
+			activeGameId() {
+				this.emptyCheck = 0;
+				for (let i = 0; i < this.matches.length; i++) {
+					if (this.matches[i][2] == this.activeGameId) this.emptyCheck++
+				}
+			}
 		}
 	}
 </script>
@@ -65,4 +89,8 @@
 	.container
 		padding: 0px
 		margin-left: 0px
+		p
+			color: rgba(255, 255, 255, 0.5)
+			text-align: center
+			width: 100%
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<form class="do_bet col-12 row" @submit.prevent="sendBet">
+	<form class="do_bet col-12 row" @submit.enter.prevent="sendBet">
 		<div class="col do_bet-left_decoration align-self-center"></div>		
 		<p class="do_bet-promo col-auto">{{ info.eventType }} {{ info.betName }}</p>
 		<div class="col do_bet-right_decoration align-self-center"></div>
@@ -14,7 +14,7 @@
 				<span>{{ info.choose }}</span>
 			</div>
 			<div class="do_bet-choose-bet col-6 row justify-content-between">
-				<input type="text" id="betInput" class="do_bet-choose-bet-input col" placeholder="Ставка" @input="onInput($event)">
+				<input type="text" id="betInput" autocomplete="off" class="do_bet-choose-bet-input col" placeholder="Ставка" @input="onInput($event)">
 				<button class="do_bet-choose-bet-btn col" v-if="userLogin" @submit.prevent="sendBet" :disabled="disableBet">Поставить</button>
 				<div class="do_bet-choose-bet-login col-5" v-else>
 					Вход:
@@ -28,7 +28,19 @@
 			<div class="do_bet-choose-exp col-6">
 				Будет начислено: <i>{{ exp }} очков опыта</i>
 			</div>
+
 		</div>
+		<transition name="success">
+			<div class="do_bet-success col-12 row" v-if="successBet">
+				<p>Ваша ставка принята</p>
+				<i class="far fa-check-circle"></i>
+			</div>
+		</transition>
+		
+		<transition name="error">
+			<p class="do_bet-error col-12" v-if="errorBet">{{ errorText }}</p>
+		</transition>
+		
 	</form>
 </template>
 
@@ -40,7 +52,10 @@
 	export default {
 		data: () => ({
 			betSum: null,
-			exp: 0
+			exp: 0,
+			errorText: '',
+			errorBet: false,
+			successBet: false
 		}),
 		computed: {
 			...mapGetters('betBlock', {
@@ -50,7 +65,7 @@
 				userLogin: 'userLogin'
 			}),
 			disableBet() {
-				if (this.betSum == null || this.choose == "") return true
+				if (this.betSum == null || this.betSum == "" || this.choose == "") return true
 					else return false
 			},
 			potentialWin() {
@@ -60,8 +75,14 @@
 		methods: {
 			 ...mapActions('user', {
 	        	authVk: 'authVk',
-	        	authSteam: 'authSteam'
+	        	authSteam: 'authSteam'	        	
 	      }),
+			...mapMutations('user', {
+			 	cutBalance: 'cutBalance'
+			}),
+			...mapMutations('betBlock', {
+			 	hideBlock: 'hideBlock'
+			}),
 			onInput(e) {
 				this.betSum = e.target.value;
 				if (/[^0-9]/.test(this.betSum)) this.betSum = null
@@ -71,22 +92,91 @@
 				var data = new FormData;
 				data.set('eventid', this.info.betId);
 				data.set('amount', this.betSum);				
-				data.set('choice', this.info.choose);
+				data.set('choice', this.info.betChoose);
+				console.log(this.info)
 				this.$http.post(`http://betify.xyz/api/v1/bet/add`, data)
+				.then((response) => {
+					// console.log(response)
+					if (response.body.response == "error") {						
+						if (response.body.error.code == 1) {
+							this.errorText = "Недостаточно средств";
+							this.errorBet = true;
+							setTimeout(()=>{
+								this.errorBet = false;
+							}, 2000)
+						}
+					}
+					else {
+						document.getElementById("betInput").value = "";
+						this.successBet = true;
+						setTimeout(()=>{
+							this.hideBlock();
+							this.successBet = false;
+						}, 2500)
+					}
+				})
 			}
 		}
 	}
 </script>
 
 <style scoped lang="sass">
+	.error-enter
+		transform: translate3d(0px, 50px, 0px)
+		opacity: 0
+	.error-enter-active
+		transition: opacity 0.2s, transform 0.2s
+	.error-leave-active
+		opacity: 0
+		transition: opacity 0.3s, transform 0.3s
+		transform: translate3d(0px, 50px, 0px)
+
+	.success-enter
+		transform: translate3d(0px, 40px, 0px)
+		opacity: 0
+	.success-enter-active
+		transition: all 0.4s
+	.success-leave-active
+		transform: translate3d(0px, 40px, 0px)
+		opacity: 0
+		transition: all 0.4s
+
+
 	.do_bet
 		padding: 20px 30px 
 		margin-left: 0px
 		background-color: #12192a
 		align-items: flex-start
 		align-content: flex-start
-		overflow-x: hidden
+		overflow: hidden
 		max-height: fit-content
+		&-error
+			color: red
+			position: absolute
+			z-index: 100
+			text-align: center
+			margin-bottom: 7px
+			bottom: 	0px
+			background-color: #12192a 
+		&-success
+			padding: 0px
+			margin-left: 0px
+			position: absolute
+			left: 0px
+			top: 0px
+			height: 100%
+			justify-content: center
+			align-content: center
+			background-color: #12192a
+			color: #fe903b
+			z-index: 100
+			p
+				width: 100%
+				text-align: center
+				font-weight: 600
+				margin: 0px 0px 10px 0px
+			i
+				font-size: 30px
 		&-left_decoration, &-right_decoration
 			position: relative
 			background-color: #94a0c0

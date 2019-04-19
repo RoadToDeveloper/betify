@@ -48,13 +48,7 @@
   		block.scrollTop = block.scrollHeight;
 	}
 		
-	export default {
-		mounted() {	
-			//этот таймаут для корректного скролла чата при инициализации, так как нужно время на рендер сообщений			
-			setTimeout(()=>{
-				scrollChat();	
-			}, 150)
-		},		
+	export default {	
 		data: () => ({
 			newItem: {},
 			smiles: [
@@ -189,7 +183,17 @@
 				this.placeholderColor = "placeholderOnBlur"
 			},
 			sendMsg(text, user, self) {
-				if (text != '') {					
+				if (this.userData.length == 0) {
+					this.chatError = true;
+					this.errorText = "Cначала авторизуйся <<(^_^)>>";
+					setTimeout(()=> {
+						scrollChat();
+					}, 10)	
+					setTimeout(()=>{
+						this.chatError = false;
+					}, 2500)	
+				}
+				else if (text != '' && this.chatError == false) {					
 					var data = new FormData;
 					data.set('message', text);
 					this.$http.post(`http://betify.xyz/api/v1/chat/add`, data)

@@ -7,12 +7,12 @@ import past from "./Past.js"
 export default {
 	namespaced: true,
 	state: {
-		searchMatches: [],
 		matches: [],
 		headerLogo: '',
 		activeGame: '',
 		shortActiveGameName: '',
 		searchValue: '',
+		activeStreamId: '',
 		activeGameId: null,
 		matchesByStatus: {
 			active: true,
@@ -39,6 +39,9 @@ export default {
 		},
 		searchValue(state) {
 			return state.searchValue;
+		},
+		activeStreamId(state) {
+			return state.activeStreamId
 		}
 	},
 	mutations: {
@@ -58,16 +61,16 @@ export default {
 		getMatches(state, matchData) {
 			state.matches = matchData;
 		},
-		startSearch(state, payLoad) {
-			state.searchMatches = [];
+		activateStream(state, id) {
+			state.activeStreamId = id;
+			console.log(state.activeStreamId)
 		},
 		searchMatch(state, value) {
-			state.searchValue = value;
+			state.searchValue = value;			
 			if (state.matchesByStatus.active == true) state.searchMatches = active.state.matches;
 			else if (state.matchesByStatus.future == true) state.searchMatches = future.state.matches;
 			else if (state.matchesByStatus.live == true) state.searchMatches = live.state.matches; 
-			else if (state.matchesByStatus.past == true) state.searchMatches = past.state.matches;
-			console.log(state.searchMatches)			
+			else if (state.matchesByStatus.past == true) state.searchMatches = past.state.matches;	
 		}
 	}
 }

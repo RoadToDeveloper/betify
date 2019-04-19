@@ -5,7 +5,8 @@
 															coef: coefFirst,
 															betName: name,
 															eventType: eventType,
-															betId: betId
+															betId: betId,
+															betChoose: 1
 														})">
 			<p class="team_and_coef_wrap">
 				<span>{{ teamFirst }}</span>
@@ -21,7 +22,8 @@
 															coef: coefSecond,
 															betName: name,
 															eventType: eventType,
-															betId: betId
+															betId: betId,
+															betChoose: 2
 														})">
 			<p class="team_and_coef_wrap">
 				<i>x{{ coefSecond }}</i>

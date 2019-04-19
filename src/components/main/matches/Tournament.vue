@@ -10,7 +10,7 @@
 
 <script>
 	export default {
-		props: ['name', 'logo'],
+		props: ['name', 'logo', "gameId"],
 		computed: {
 			tournamentLogo() {
 				return `http://betify.xyz/logo/event/${this.logo}.png`
@@ -31,6 +31,7 @@
 		font-weight: 700
 		color: #94a0c0
 		font-size: 16px
+		height: 76px
 		img
 			width: 40px
 			margin-right: 10px

@@ -4,6 +4,8 @@
 							:key="`al${index}`"
 							:name="group[0]"
 							:logo="group[1]"
+							ref="activeTournament"
+							:gameId="group[2]"
 							v-show="group[2] == activeGameId"
 		>
 			
@@ -25,7 +27,7 @@
 						:teamFirst = "match.team1name"
 						:teamSecond = "match.team2name"
 						:game = "match.gameid"
-						v-show = "match.gameid == activeGameId"
+						v-show = "match.gameid == activeGameId && (match.team1name.indexOf(searchValue) == 0 || match.team2name.indexOf(searchValue) == 0 || group[0].indexOf(searchValue) == 0)"
 						:format = "`Best-of-${match.format}`"
 						:id = "match.id"
 						:tournament = "match.tournament"
@@ -48,16 +50,20 @@
 						:teamFirst = "match.team1name"
 						:teamSecond = "match.team2name"
 						:game = "match.gameid"
-						v-show = "match.gameid == activeGameId"
+						v-show = "match.gameid == activeGameId && (match.team1name.indexOf(searchValue) == 0 || match.team2name.indexOf(searchValue) == 0 || group[0].indexOf(searchValue) == 0)"
 						:format = "`Best-of-${match.format}`"
 						:id = "match.id"
+						:streamId = "`al${match.id}`"
 						:tournament = "match.tournament"
+						:stream = "match.stream"
 			>
+				<div class="stream_wrap"  :id="`al${match.id}`"></div>
 			</live-match>
 			</div>
 			
 		</app-tournament>
-				
+		<p v-if="!emptyCheck">Сожалеем, сейчас в дисциплине {{ activeGame }} нет событий данного типа</p>	
+		<p v-if="!searchResult">Упс, совпадений не найдено :(</p>		
 	</div>	
 </template>
 
@@ -70,6 +76,15 @@
 	import getDate from '../../../../src/filters/getDate.js'
 
 	export default {
+		mounted() {
+			setTimeout(()=>{
+				console.log(this.$refs.activeTournament[0])
+			}, 1000)			
+		},
+		data: ()=>({
+			emptyCheck: 1,
+			searchResult: true
+		}),
 		components: {
 			FutureMatch,
 			LiveMatch,
@@ -84,8 +99,58 @@
 				matches: 'matches'
 			}),
 			...mapGetters('matches', {
-				activeGameId: 'activeGameId'
-			})
+				activeGameId: 'activeGameId',
+				activeGame: 'activeGame',
+				searchValue: 'searchValue'
+			}),
+			checkToShowTournament() {
+				let array = this.$refs.activeTournament;
+
+				for (let i = 0; i < array.length; i++) {
+					if (array[i].gameId == this.activeGameId && array[i].name.indexOf(this.searchValue) != 0) {
+						let counter = 0;
+						for (let j = 0; j < array[i].$children.length; j++) {
+							if (array[i].$children[j].teamFirst.indexOf(this.searchValue) == 0 || array[i].$children[j].teamSecond.indexOf(this.searchValue) == 0) {
+								counter++;
+							}
+						}
+						if (counter == 0) array[i].$el.style.display = "none"
+							else array[i].$el.style.display = "flex"
+					}							
+				}
+				if (array[0].$parent.$el.clientHeight == 0) this.searchResult = false;
+					else this.searchResult = true;
+			}
+		},
+		watch: {
+			matches() {
+				this.emptyCheck = 0;
+				for (let i = 0; i < this.matches.length; i++) {
+					if (this.matches[i][2] == this.activeGameId) this.emptyCheck++
+				}	
+			},
+			activeGameId() {
+				this.checkToShowTournament;
+				this.emptyCheck = 0;
+				this.searchResult = true;
+				for (let i = 0; i < this.matches.length; i++) {
+					if (this.matches[i][2] == this.activeGameId) this.emptyCheck++
+				}
+				
+					
+					
+			},
+			searchValue() {
+				if (this.searchValue == "") {
+					let array = this.$refs.activeTournament;
+					for (let i = 0; i < array.length; i++) {
+						if (array[i].gameId == this.activeGameId) {
+							array[i].$el.style.display = "flex"
+						}							
+					}
+				}
+				else this.checkToShowTournament;														
+			}
 		}
 	}
 </script>
@@ -96,4 +161,8 @@
 		margin-left: 0px
 		.template-container
 			width: 100%
+		p
+			color: rgba(255, 255, 255, 0.5)
+			text-align: center
+			width: 	100%
 </style>

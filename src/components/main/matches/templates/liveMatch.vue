@@ -1,81 +1,91 @@
 <template>
-	
-	<div class="item row col-12" v-show="show">
-		<div class="item-date col-1">
-			<p class="item-date-time">{{ time }}</p>
-			<p class="item-date-date">{{ date }}</p>
-		</div>
-		<div class="item-tv_wrap col-1">
-			<span>
-				LIVE 
-				<i class="fas fa-tv"></i>
-			</span>
-		</div>
-		<div class="item-first_team col">
-			<span>{{ teamFirst }}</span>
-			<img :src="logoFirst" alt="">	
-			<div class="item-money-wrap">
-				<i>{{ moneyFirst }} ₽</i>
-				<span>x{{ coefFirst }} - {{ percentageFirst }}</span>
-			</div>			
-		</div>
-		<div class="item-vs col-auto">
-			<span>
-				<i :class="firstTeamWinner"> {{ scoreFirst }} </i> : <i :class="secondTeamWinner"> {{ scoreSecond }} </i>
-			</span>
-		</div>
-		<div class="item-second_team col">
-			<div class="item-money-wrap">
-				<i>{{ moneySecond }} ₽</i>
-				<span>x{{ coefSecond }} - {{ percentageSecond }}</span>
+	<div class="wrap_live row col-12" v-show="show">
+		<div class="item row col-12">
+			<div class="item-date col-1">
+				<p class="item-date-time">{{ time }}</p>
+				<p class="item-date-date">{{ date }}</p>
 			</div>
-			<img :src="logoSecond" alt="">
-			<span>{{ teamSecond }}</span>
-		</div>
+			<div class="item-tv_wrap col-1" >
+				<span ref="openStream">
+					LIVE 
+					<i class="fas fa-tv"  v-if="streamExist" @click="showStream(streamId, stream)"></i>
+				</span>
+			</div>
+			<div class="item-first_team col">
+				<span>{{ teamFirst }}</span>
+				<img :src="logoFirst" alt="">	
+				<div class="item-money-wrap">
+					<i>{{ moneyFirst }} ₽</i>
+					<span>x{{ coefFirst }} - {{ percentageFirst }}</span>
+				</div>			
+			</div>
+			<div class="item-vs col-auto">
+				<span>
+					<i :class="firstTeamWinner"> {{ scoreFirst }} </i> : <i :class="secondTeamWinner"> {{ scoreSecond }} </i>
+				</span>
+			</div>
+			<div class="item-second_team col">
+				<div class="item-money-wrap">
+					<i>{{ moneySecond }} ₽</i>
+					<span>x{{ coefSecond }} - {{ percentageSecond }}</span>
+				</div>
+				<img :src="logoSecond" alt="">
+				<span>{{ teamSecond }}</span>
+			</div>
 
-		<div class="item-extra col-auto" @mousedown="getInfoFromApi(
-										{
-											id: id,
-											coefFirst: coefFirst,
-											coefSecond: coefSecond,
-											date: date,
-											time: time,
-											logoFirst: logoFirst,
-											logoSecond: logoSecond,
-											percentageFirst: percentageFirst,
-											percentageSecond: percentageSecond,
-											scoreFirst: scoreFirst,
-											scoreSecond: scoreSecond,
-											teamFirst: teamFirst,
-											teamSecond: teamSecond,
-											game: game,
-											format: format,
-											tournament: tournament,
-											firstChoose: teamFirst,
-											secondChoose: teamSecond,
-											moneyFirst: moneyFirst,
-											moneySecond: moneySecond,
-											betName: 'Выбор события и ставка',
-											betId: null,
-											eventType: '',
-											liveMatch: true
-										}
-									)"
-				>
-			Подробнее
-			<i class="fas fa-arrow-right"></i>
+			<div class="item-extra col-auto" @mousedown="getInfoFromApi(
+											{
+												id: id,
+												coefFirst: coefFirst,
+												coefSecond: coefSecond,
+												date: date,
+												time: time,
+												logoFirst: logoFirst,
+												logoSecond: logoSecond,
+												percentageFirst: percentageFirst,
+												percentageSecond: percentageSecond,
+												scoreFirst: scoreFirst,
+												scoreSecond: scoreSecond,
+												teamFirst: teamFirst,
+												teamSecond: teamSecond,
+												game: game,
+												format: format,
+												tournament: tournament,
+												firstChoose: teamFirst,
+												secondChoose: teamSecond,
+												moneyFirst: moneyFirst,
+												moneySecond: moneySecond,
+												betName: 'Выбор события и ставка',
+												betId: null,
+												eventType: '',
+												liveMatch: true
+											}
+										)"
+					>
+				Подробнее
+				<i class="fas fa-arrow-right"></i>
+			</div>
 		</div>
+		<slot :id="streamId" v-show="false"></slot>	
 	</div>
+	
 </template>
 
 <script>
 	import {mapMutations} from 'vuex'
 	import {mapActions} from 'vuex'
+	import {mapGetters} from 'vuex'
 
 	export default {
 		props: {
 			id: {
 				type: Number
+			},
+			streamId: {
+				type: String
+			},
+			stream: {
+				type: String
 			},
 			tournament: {
 				type: String
@@ -132,23 +142,71 @@
 				type: Boolean
 			}
 		},
+		data: () => ({
+
+		}),
 		computed: {
+			...mapGetters('matches', {
+				activeStreamId: 'activeStreamId'
+			}),
 			firstTeamWinner() {
 				if (this.scoreFirst > this.scoreSecond) return "winner"
 			},
 			secondTeamWinner() {
 				if (this.scoreFirst < this.scoreSecond) return "winner"
+			},
+			streamExist() {
+				if (this.stream != '') return true
+					else return false
 			}
 		},
 		methods: {
 			...mapActions('betBlock', {
 				getInfoFromApi: 'getInfoFromApi'
-			})
+			}),
+			...mapMutations('matches', {
+				activateStream: 'activateStream'
+			}),
+			showStream(id, stream) {
+				let array = document.querySelectorAll(".item-tv_wrap span")
+				for (let i = 0; i < array.length; i++) {
+					// array[i].style.backgroundColor = "#f64848"
+					array[i].classList.remove("active_tv_wrap");
+				}
+				if (id == this.activeStreamId) {
+					document.getElementById(id).innerHTML = "";
+					// document.getElementById(id).remove();
+					this.activateStream("");
+					this.$refs.openStream.classList.remove("active_tv_wrap");						
+				} 
+				else {
+					let wraps = document.querySelectorAll(".stream_wrap");
+					for (let wrap of wraps) wrap.innerHTML = "";
+					this.activateStream(id)
+					new Twitch.Embed(`${id}`, {
+			        	height: 480,
+			        	channel: `${stream}`,
+			        	layout: "video"
+			      });
+			      // this.$refs.openStream.style.backgroundColor = "rgba(90, 131, 255, 0.6)"
+			      this.$refs.openStream.classList.add("active_tv_wrap");
+			      document.querySelector("iframe").style.width = "100%"
+			      console.log(this.activeStreamId)									
+				}
+				
+			}
 		}
 	}
 </script>
 
-<style scoped lang="sass">		
+<style scoped lang="sass">	
+	.wrap_live
+		margin-left: 0px
+		padding: 0px
+	.stream_wrap
+		width: 100%	
+		overflow: hidden
+		
 	.item
 		padding: 10px 45px
 		margin-left: 0px
@@ -171,6 +229,7 @@
 				margin-top: 5px
 				font-size: 12px
 				color: #4a526b
+		
 		&-tv_wrap
 			display: flex
 			padding: 0px
@@ -183,6 +242,12 @@
 				border-radius: 5px
 				font-size: 14px
 				font-weight: 600
+				transition: all 0.3s
+				&:hover
+					cursor: pointer
+					background-color: #fe903b
+		.active_tv_wrap
+			background-color: rgba(90, 131, 255, 0.6)
 		&-first_team, &-second_team
 			display: flex
 			align-items: center
@@ -193,8 +258,12 @@
 			img
 				width: 35px
 				margin: 0px 10px
+			span
+				text-align: right
 		&-second_team
 			justify-content: flex-start
+			span
+				text-align: left
 		// &-vs
 		// 	display: flex
 		// 	align-items: center
@@ -294,7 +363,7 @@
 				display: flex
 				align-items: center
 				color: #6f7481
-				font-size: 14px
+				font-size: 12px
 				transition: all 0.3s
 				img
 					margin-left: 10px

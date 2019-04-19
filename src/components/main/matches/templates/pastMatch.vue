@@ -162,8 +162,12 @@
 			img
 				width: 35px
 				margin: 0px 10px
+			span
+				text-align: right
 		&-second_team
 			justify-content: flex-start
+			span
+				text-align: left
 		&-vs
 			display: flex
 			align-items: center
