@@ -1,16 +1,15 @@
 <template>
 	<div class="container col-12 row">
-	  
-		<app-tournament v-for="(group, index) in matches" 
+		<app-tournament v-for="(group, index) in matches"
 							:key="`l${index}`"
 							:name="group[0]"
 							:logo="group[1]"
-							v-show="group[2] == activeGameId && group.length > 3"
+							v-show="group[2] === activeGameId && group.length > 3"
 		>
-			<live-match v-for="(match, index) in group.slice(3)"
+			<live-match v-for="match in group.slice(3)"
 						:key = "match.id"
-						:coefFirst = "match.coefficients[0]"	
-						:coefSecond = "match.coefficients[1]"	
+						:coefFirst = "match.coefficients[0]"
+						:coefSecond = "match.coefficients[1]"
 						:date = "match.datetime.split(' ')[0] | getDate"
 						:time = "match.datetime.split(' ')[1] | getTime"
 						:logoFirst = "`http://betify.xyz/logo/${match.team1id}.${match.team1extension}`"
@@ -36,7 +35,7 @@
 
 		</app-tournament>
 		<p v-if="!emptyCheck">Сожалеем, сейчас в дисциплине {{ activeGame }} нет событий данного типа</p>
-	</div>	
+	</div>
 </template>
 
 <script>
@@ -73,7 +72,7 @@
 				this.emptyCheck = 0;
 				for (let i = 0; i < this.matches.length; i++) {
 					if (this.matches[i][2] == this.activeGameId) this.emptyCheck++
-				}	
+				}
 			},
 			activeGameId() {
 				this.emptyCheck = 0;

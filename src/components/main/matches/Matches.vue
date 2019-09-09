@@ -6,13 +6,13 @@
 				<span class="matches-header-left_part-text">
 					<span class="matches-header-left_part-text-name">{{gameName}}</span>
 					<span class="matches-header-left_part-text-time">30 января 2019, 22:16</span>
-				</span>				
+				</span>
 			</div>
-			
+
 			<div class="matches-header-date col-auto">
 				<img class="matches-header-date-icon" src="../../../../public/img/calendar.png" alt="">
 				<span class="matches-header-date-text">Календарь событий</span>
-			</div>		
+			</div>
 		</div>
 		<!-- <button @click.prevent="doLive()">Сделать матч лайвом</button>
 		<button @click.prevent="doPast()">Сделать матч прошедшим</button> -->
@@ -24,12 +24,12 @@
 				<li class="matches-type-items-item" @mousedown="sortByStatus($event, 'past')">Прошедшие матчи</li>
 			</ul>
 		</div>
-		
+
 			<app-active v-show="matchesByStatus.active" key="active"></app-active>
 			<app-future v-show="matchesByStatus.future" key="future"></app-future>
 			<app-live v-show="matchesByStatus.live" key="live"></app-live>
 			<app-past v-show="matchesByStatus.past" key="past"></app-past>
-		
+
 	</div>
 </template>
 
@@ -44,29 +44,36 @@
 	import {mapGetters} from 'vuex'
 
 	export default {
+      components: {
+         AppActive,
+         AppFuture,
+         AppLive,
+         AppPast,
+         AppTournament,
+      },
 		mounted() {
 			//реагирование на событие изменения матча
-			this.sockets.subscribe('matchUpdate', (data) => {
-			   console.log(data);
-			   for (let i = 0; i < this.allMatches.length; i++) {
-			   	if (this.allMatches[i].id == data.id) {
-			   		if (this.allMatches[i].status == 0) {
-			   			this.updateActiveMatch(data);
-			   			this.updateFutureMatch(data);
-			   		} 
-			   		else if (this.allMatches[i].status == 1) {
-			   			this.updateActiveMatch(data);
-			   			this.updateLiveMatch(data);
-			   		} 
-			   	}
-			   }
-			});
+			// this.sockets.subscribe('matchUpdate', (data) => {
+			//    console.log(data);
+			//    for (let i = 0; i < this.allMatches.length; i++) {
+			//    	if (this.allMatches[i].id == data.id) {
+			//    		if (this.allMatches[i].status == 0) {
+			//    			this.updateActiveMatch(data);
+			//    			this.updateFutureMatch(data);
+			//    		}
+			//    		else if (this.allMatches[i].status == 1) {
+			//    			this.updateActiveMatch(data);
+			//    			this.updateLiveMatch(data);
+			//    		}
+			//    	}
+			//    }
+			// });
 			//изменение баланса юзера
-			this.sockets.subscribe('balanceDiff', (data) => {
-			   this.cutBalance(data.diff)		   
-			});
+			// this.sockets.subscribe('balanceDiff', (data) => {
+			//    this.cutBalance(data.diff)
+			// });
 			let leftPartWidth = getComputedStyle(document.getElementById("leftPart")).width;
-      	document.getElementById("matchesTypes").style.maxWidth = leftPartWidth;
+         document.getElementById("matchesTypes").style.maxWidth = leftPartWidth;
 		},
 		data: () => ({
 			types: [
@@ -114,7 +121,7 @@
 				updateActiveMatch: 'updateMatch'
 			}),
 			...mapMutations('user', {
-			 	cutBalance: 'cutBalance'
+            cutBalance: 'cutBalance'
 			}),
 			sortByStatus(e, type) {
 				var items = document.querySelectorAll(".matches-type-items-item");
@@ -133,13 +140,6 @@
 			// 	this.updateActiveMatch({status: 2, score: "10:15", id: 2332039})
 			// }
 		},
-		components: {
-			AppActive,
-			AppFuture,
-			AppLive,
-			AppPast,
-			AppTournament
-		}
 	}
 </script>
 
@@ -158,17 +158,17 @@
 	.matches
 		background-color: #0b101c
 		margin-left: 25%
-		padding: 0px
+		padding: 0
 		align-content: flex-start
 		overflow-x: hidden
 		.row
-			margin-left: 0px
+			margin-left: 0
 		&-header
-			padding: 0px 45px
+			padding: 0 45px
 			height: 90px
 			align-items: flex-end
 			&-left_part
-				padding: 0px
+				padding: 0
 				display: flex
 				align-items: center
 				&-img
@@ -186,7 +186,7 @@
 						font-size: 14px
 						vertical-align: bottom
 			&-date
-				padding: 0px
+				padding: 0
 				margin-bottom: 9px
 				text-align: right
 				&-icon
@@ -196,17 +196,17 @@
 					color: #6f7481
 					font-weight: 600
 					font-size: 14px
-		
+
 		&-type
 			height: 102px
-			margin-left: 0px
-			padding: 0px 45px
+			margin-left: 0
+			padding: 0 45px
 			align-items: center
 			font-size: 14px
 			&-items
-				padding: 0px
-				margin: 0px
-				max-width: 100%!important	
+				padding: 0
+				margin: 0
+				max-width: 100%!important
 				.type_item-active
 					color: #fff
 					&:before
@@ -215,11 +215,10 @@
 					list-style-type: none
 					user-select: none
 					width: 24%
-					display: inline-flex					
+					display: inline-flex
 					font-weight: 600
 					position: relative
-					transition: all 0.3s
-					padding: 5px 0px 5px 22px
+					padding: 5px 0 5px 22px
 					text-decoration: none
 					color: #6f7481
 					transition: all 0.3s
@@ -232,13 +231,13 @@
 						height: 100%
 						background-color: #1d243b
 						width: 2px
-						left: 0px
-						top: 0px
+						left: 0
+						top: 0
 	//MEDIA
 	@media only screen and (max-width : 1600px)
 		.matches
 			&-header
-				padding: 0px 30px
+				padding: 0 30px
 				height: 70px
 				&-left_part
 					&-img
@@ -254,7 +253,7 @@
 					&-text
 						font-size: 12px
 			&-type
-				padding: 0px 30px	
+				padding: 0 30px
 				height: 72px
 				font-size: 12px
 

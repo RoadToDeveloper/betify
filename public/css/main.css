@@ -4,8 +4,9 @@ html {
 }
 body {
 	/*min-width: 1200px;*/
-	margin: 0px;   
-	background-color: #080c17; 
+	margin: 0px;
+	background-color: #080c17;
+	font-family: 'Montserrat';
 }
 body::-webkit-scrollbar-thumb {
 	background-color: #373f53;

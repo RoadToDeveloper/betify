@@ -13,14 +13,14 @@ import popups from './modules/popups'
 import user from './modules/User'
 
 export default new Vuex.Store({
-  	modules: {
-  		matches,
-  		active,
-  		past,
-  		live,
-  		future,
-  		betBlock,
-  		popups,
-  		user
-  	}
+modules: {
+	matches,
+	active,
+	past,
+	live,
+	future,
+	betBlock,
+	popups,
+	user
+}
 })

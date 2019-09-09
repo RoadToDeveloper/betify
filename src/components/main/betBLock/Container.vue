@@ -22,7 +22,7 @@
 					<p>{{ info.teamFirst }}</p>
 					<p>{{ info.percentageFirst }} на победу</p>
 				</div>
-				<div class="block_wrap-body-info-numbers col-3">
+				<div class="block_wap-body-info-numbers col-3">
 					<p class="block_wrap-body-info-numbers-time">{{ info.time }}</p>
 					<p class="block_wrap-body-info-numbers-date">{{ info.date }}</p>
 					<strong>VS</strong>
@@ -36,12 +36,12 @@
 			</div>
 			<div class="block_wrap-body-extra_events col-12 row">
 				<!-- <p class="col-12">Дополнительные события:</p> -->
-				<div class="block_wrap-body-extra_events-items col-12 row" 
+				<div class="block_wrap-body-extra_events-items col-12 row"
 						v-for="(eventList, index) in betItems"
 						v-show="eventList.length"
 						:key = "index"
 					>
-					<div class="block_wrap-body-extra_events-items-category col-12">{{ index | ExtraEventsName }}</div>					
+					<div class="block_wrap-body-extra_events-items-category col-12">{{ index | ExtraEventsName }}</div>
 					<app-item v-for="(item, i) in eventList"
 								:key="item.id"
 								:name="item.name"
@@ -50,7 +50,7 @@
 								:moneyFirst = "item.money1"
 								:moneySecond = "item.money2"
 								:show = "item.status"
-								:coefFirst = "item.coefficients[0]"	
+								:coefFirst = "item.coefficients[0]"
 								:coefSecond = "item.coefficients[1]"
 								:eventType = "index | ExtraEventsName"
 								:betId = "item.id"
@@ -221,9 +221,9 @@
 						text-align: center
 			&-extra_events
 				margin-left: 0px
-				padding: 0px 30px 20px 30px 
+				padding: 0px 30px 20px 30px
 				align-content: flex-start
-				align-items: flex-start		
+				align-items: flex-start
 				overflow-x: hidden
 				overflow-y: auto
 				flex: 1
@@ -269,19 +269,19 @@
 							height: 5px
 							bottom: 7px
 							width: 40%
-							right: -35px										
+							right: -35px
 			&-left_color, &-right_color
 				position: absolute
 				top: 0px
 				left: 0px
 				background-color: #0b101c
-				height: 100% 
+				height: 100%
 			&-right_color
 				background-color: #0e1526
 				left: 50%
 	@media only screen and (max-width : 1600px)
 		.block_wrap
-			max-width: 45%			
+			max-width: 45%
 			&-header
 				max-height: 60px
 				padding: 0px 20px
@@ -290,7 +290,7 @@
 						width: 40px
 						margin-right: 10px
 					&-name
-						font-size: 16px	
+						font-size: 16px
 				&-tournament
 					font-size: 14px
 				&-arrow

@@ -12,7 +12,7 @@
 				<i>{{userData.balance}}</i>₽
 			</span>
 			<img src="../../../../public/img/deposit.png" alt="" class="user_login-deposit" @click="showPopup('deposit')">
-			<img src="../../../../public/img/withdraw.png" alt="" class="user_login-withdraw" @click="showPopup('withdraw')">			
+			<img src="../../../../public/img/withdraw.png" alt="" class="user_login-withdraw" @click="showPopup('withdraw')">
 		</div>
 
 		<div class="user_unlogin col-3 row align-items-center" v-else>
@@ -24,20 +24,20 @@
 		<div class="header-menu col-5 row justify-content-between" :class="userLoginSearchClass">
 			<div class="header-menu-search col-5" :class = "inputClass">
 				<i class="fas fa-search header-menu-search-icon"></i>
-				<input class="header-menu-search-input" type="text" placeholder="Например: Virtus.pro"							
+				<input class="header-menu-search-input" type="text" placeholder="Например: Virtus.pro"
 							@focus = "searchActive"
 							@blur = "searchInactive"
 							@input = "searchMatch($event.target.value)"
 				>
 			</div>
-			<div class="header-menu-right_part col-7">								
+			<div class="header-menu-right_part col-7">
 
 				<app-tippy v-for="(item, index) in tippy"
 								:key="index"
 								:text="item.text"
 								:icon="item.icon"
 								:popup="item.popup"
-								>					
+								>
 				</app-tippy>
 
 				<span class="header-menu-right_part-select_wrap">
@@ -56,20 +56,20 @@
 						<option value="+8" id="time12">02:42 (GMT +11)</option>
 						<option value="+9" id="time13">03:42 (GMT +12)</option>
 					</select>
-					<img class="header-menu-right_part-select_wrap-arrow" 
+					<img class="header-menu-right_part-select_wrap-arrow"
 						src="../../../../public/img/select_arrow.png" alt="">
-				</span>				
+				</span>
 			</div>
 		</div>
 		<div class="header-exit_wrapper col-1" v-if="userLogin" @click="logout()">
 			<div class="header-exit_wrapper-btn" >
 				<!-- <i class="fas fa-room-closed"></i> -->
 				<!-- <img src="../../../public/img/exit.png" alt=""> -->
-				<span>Выйти</span>					
+				<span>Выйти</span>
 			</div>
 		</div>
-		
-		
+
+
 	</header>
 </template>
 
@@ -81,7 +81,7 @@
 
 	export default {
 		created() {
-			this.$socket.emit('userID', this.userData.id)
+			// this.$socket.emit('userID', this.userData.id)
 		},
 		data: () => ({
 			inputClass: '',
@@ -165,7 +165,7 @@
 			padding: 0px
 			margin-left: 0px
 			span
-				font-size: 14px				
+				font-size: 14px
 			i
 				margin-left: 5px
 				padding: 5px
@@ -209,7 +209,7 @@
 		&-menu
 			margin-left: 15px
 			padding: 0px
-			
+
 			&-search
 				display: flex
 				align-items: center
@@ -229,12 +229,12 @@
 					position: relative
 					outline: 0px
 					font-size: 14px
-					width: 70%					
+					width: 70%
 					font-family: inherit
 					&::-webkit-input-placeholder
-						color: #373f53	
-						font-weight: 600			
-				&:after 
+						color: #373f53
+						font-weight: 600
+				&:after
 					position: absolute
 					content: ''
 					left: 50%
@@ -245,16 +245,16 @@
 					background-color: rgba(255, 255, 255, 0.3)
 			.input-inactive
 				input, i
-					color: #373f53				
+					color: #373f53
 			.input-active
 				input, i
 					color: rgba(255, 255, 255, 0.3)
-				
+
 			&-right_part
 				display: flex
 				align-items: center
 				justify-content: flex-end
-				padding: 0px 25px 0px 0px			
+				padding: 0px 25px 0px 0px
 				&-select_wrap
 					position: relative
 					&-select
@@ -300,7 +300,7 @@
 					cursor: pointer
 					color: rgba(255,255,255,0.5)
 					// transform: translate3d(5px, 0px, 0px)
-	
+
 	//MEDIA
 	@media only screen and (max-width : 1600px)
 		.header
@@ -325,7 +325,7 @@
 				&-search
 					&-input
 						font-size: 12px
-				&-right_part		
+				&-right_part
 						&-select_wrap
 							&-select
 								padding: 7px 23px 7px 15px

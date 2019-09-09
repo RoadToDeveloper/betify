@@ -7,11 +7,11 @@ import VueSocketIO from 'vue-socket.io'
 
 Vue.config.productionTip = false
 Vue.use(VueResource);
-Vue.use(new VueSocketIO({
-    debug: false,
-    connection: "http://80.78.248.37:1111/"
-  })
-);
+// Vue.use(new VueSocketIO({
+//     debug: false,
+//     connection: "http://80.78.248.37:1111/"
+//   })
+// );
 
 new Vue({
   router,

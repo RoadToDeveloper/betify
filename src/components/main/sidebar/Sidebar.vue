@@ -17,7 +17,7 @@
 		</div>
 		<transition name="changeBlock" mode="out-in">
 			<app-chat v-if="showChat" key="games_block"></app-chat>
-			<app-games v-else key="chat_block"></app-games>
+			<app-games v-else key="chat_block"></app-games>		
 		</transition>
 		
 	</div>

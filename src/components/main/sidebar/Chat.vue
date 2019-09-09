@@ -273,13 +273,12 @@
 	.placeholderOnBlur
 		color: rgba(255,255,255,0.5)!important
 	.chat
-		margin-left: 0px	
+		margin-left: 0	
 		position: relative
-		padding: 0px
 		flex: 1
 		flex-direction: column
-		padding: 0px 20px 15px 43px	
-		
+		padding: 0 20px 15px 43px
+		overflow-y: auto
 		&-send_wrap	
 			margin-top: 0px
 			margin-left: 0px	
