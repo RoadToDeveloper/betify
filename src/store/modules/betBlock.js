@@ -1,6 +1,5 @@
 import Vue from 'vue';
-import router from '../../router.js'
-import matches from './Matches.js'
+import router from '../../router.js';
 
 export default {
 	namespaced: true,
@@ -36,7 +35,7 @@ export default {
 			state.info = data;
 			// state.show = true;
 			// не обнуляем choose и coef, если ставка делается сразу из матча
-			if (data.readyBet == undefined) {
+			if (data.readyBet === undefined) {
 				state.info.coef = 0;
 				state.info.choose = "";
 			}		
@@ -45,22 +44,22 @@ export default {
 			body.onclick = function(e) {return 0}
 			setTimeout(() => {				
 				body.onkeydown = function(e) {					
-					if (e.code == "Escape")	{
+					if (e.code === "Escape")	{
 						state.show = false;
 						body.onkeydown = function(e) {return 0};
 						body.onclick = function(e) {return 0};
-						if (router.currentRoute.name == "betBlock") router.go(-1);
+						if (router.currentRoute.name === "betBlock") router.go(-1);
 					}
 					else return 0
-				}
+				};
 				body.onclick = function(e) {
 					let betBlockWidth = parseInt(getComputedStyle(document.getElementById("block_wrap")).width);
-					if (e.pageX == 0) return 0					
+					if (e.pageX === 0) return 0;
 					else if (e.pageX < window.innerWidth - betBlockWidth) {
 						state.show = false;
 						body.onkeydown = function(e) {return 0};
 						body.onclick = function(e) {return 0};
-						if (router.currentRoute.name == "betBlock") router.go(-1);
+						if (router.currentRoute.name === "betBlock") router.go(-1);
 					}
 				}
 			}, 500)
